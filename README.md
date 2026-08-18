@@ -14,11 +14,24 @@ reusable skills.
 |---|---|
 | [`web-brand`](skills/web-brand/) | **WebBrand** — turns one SVG mark into a complete web brand kit: favicons (including a real `.ico`), app icons, PWA icons, social avatars, lockups, an X banner and an OG card, then wires the `<head>` tags, web manifest and JSON-LD into the site and verifies the result. |
 
+## Requirements
+
+- **Node 20+** to run a skill's scripts
+- **Node 20.12+** if you install with `npx skills add` — the `skills` CLI uses
+  `node:util`'s `styleText`, and older versions fail with a `SyntaxError` that
+  looks like a broken package but is really a stale Node
+- **Chrome or Chromium** for `web-brand`, which rasterises through headless
+  Chrome. Common macOS and Linux paths are found automatically; otherwise pass
+  `--chrome <path>` or set `$CHROME_PATH`
+
 ## Install
 
 ```bash
-npx skills add davmixcool/skills --skill web-brand
+npx skills add davmixcool/skills --skill web-brand -g
 ```
+
+`-g` installs at user level, so the skill is available in every project. Drop it
+to install into the current project instead, under `./.agents/skills/`.
 
 Or install manually for Claude Code:
 
