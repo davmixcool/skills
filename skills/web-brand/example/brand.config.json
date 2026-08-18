@@ -1,0 +1,43 @@
+{
+  "name": "SaaSgate",
+  "shortName": "SaaSgate",
+  "tagline": "Your gateway from idea to SaaS.",
+  "headline": "Your SaaS.\nBuilt. Launched.",
+  "blurb": "From idea to paying customers, we build the product in between.",
+  "domain": "saasgate.xyz",
+
+  "colors": {
+    "ink": "#0a0a0d",
+    "accent": "#f0263f",
+    "light": "#ffffff",
+    "muted": "#a4a4ae",
+    "onDark": "#f2f2f4"
+  },
+
+  "font": { "family": "Inter", "weight": 600 },
+
+  "inset": 0.9,
+  "cornerRadius": 0.22,
+
+  "mark": {
+    "viewBox": "0 0 200 200",
+    "primary": [
+      "M94 31.5L39.5 64.5V133.5L70.5 151.5V137.5L52.5 127.5V71.5L94 46.5V31.5Z",
+      "M94 61.5L60.5 79V119L81.5 131.5V158.5L94 166V124.5L74 113.5V85.5L94 74.5V61.5Z"
+    ],
+    "accent": [
+      "M106.5 31.5V74L126.5 85V112L106.5 123V136L138.5 115.5V76.5L119.5 66.5V39.5L106.5 31.5Z",
+      "M130.5 47V59L149.5 70V126L107 151.5V166L161.5 133V64.5L130.5 47Z"
+    ]
+  },
+
+  "markSmall": {
+    "viewBox": "0 0 200 200",
+    "primary": [
+      "M94 31.5L39.5 64.5V133.5L70.5 151.5V137.5L52.5 127.5V71.5L94 46.5V31.5Z"
+    ],
+    "accent": [
+      "M130.5 47V59L149.5 70V126L107 151.5V166L161.5 133V64.5L130.5 47Z"
+    ]
+  }
+}
