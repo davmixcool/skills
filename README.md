@@ -13,6 +13,7 @@ reusable skills.
 | Skill | What it does |
 |---|---|
 | [`web-brand`](skills/web-brand/) | **WebBrand** — turns one SVG mark into a complete web brand kit: favicons (including a real `.ico`), app icons, PWA icons, social avatars, lockups, an X banner and an OG card, then wires the `<head>` tags, web manifest and JSON-LD into the site and verifies the result. |
+| [`scrinly`](skills/scrinly/) | **Scrinly** — captures stored webpage screenshots, produces model-sized regions and Visual Style Guides, compares screenshots, polls asynchronous jobs, and reports credit usage through Scrinly's remote MCP server. |
 
 ## Requirements
 
@@ -28,6 +29,7 @@ reusable skills.
 
 ```bash
 npx skills add davmixcool/skills --skill web-brand -g
+npx skills add davmixcool/skills --skill scrinly -g
 ```
 
 `-g` installs at user level, so the skill is available in every project. Drop it
@@ -37,6 +39,7 @@ Or install manually for Claude Code:
 
 ```bash
 cp -r skills/web-brand ~/.claude/skills/
+cp -r skills/scrinly ~/.claude/skills/
 ```
 
 For claude.ai, add the skill to project knowledge, or paste the contents of
@@ -48,6 +51,8 @@ Then just ask:
 ```text
 Use the web-brand skill to generate and integrate the complete
 brand asset kit for this site from logo.svg.
+
+Use the scrinly skill to capture a stored full-page screenshot with regions.
 ```
 
 ## Contributing
