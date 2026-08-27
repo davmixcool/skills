@@ -1,0 +1,15 @@
+interface:
+  display_name: "MetaManager Metadata"
+  short_description: "Check, fix and verify page metadata with MetaManager"
+  default_prompt: "Use $metamanager to check this page's metadata, fix what is wrong, and re-check to confirm the score improved."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "metamanager"
+      description: "MetaManager's metadata checking, site audit and monitoring MCP server"
+      transport: "streamable_http"
+      url: "https://mcp.metamanager.dev/mcp"
+
+policy:
+  allow_implicit_invocation: true

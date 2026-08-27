@@ -14,6 +14,7 @@ reusable skills.
 |---|---|
 | [`web-brand`](skills/web-brand/) | **WebBrand** — turns one SVG mark into a complete web brand kit: favicons (including a real `.ico`), app icons, PWA icons, social avatars, lockups, an X banner and an OG card, then wires the `<head>` tags, web manifest and JSON-LD into the site and verifies the result. |
 | [`scrinly`](skills/scrinly/) | **Scrinly** — captures stored webpage screenshots, produces model-sized regions and Visual Style Guides, compares screenshots, polls asynchronous jobs, and reports credit usage through Scrinly's remote MCP server. |
+| [`metamanager`](skills/metamanager/) | **MetaManager** — checks how a page presents itself (title, description, canonical, Open Graph, Twitter cards), scores it 0-100, returns framework-specific fixes, audits whole sites and verifies a fix by re-checking, through MetaManager's remote MCP server. |
 
 ## Requirements
 
@@ -30,6 +31,7 @@ reusable skills.
 ```bash
 npx skills add davmixcool/skills --skill web-brand -g
 npx skills add davmixcool/skills --skill scrinly -g
+npx skills add davmixcool/skills --skill metamanager -g
 ```
 
 `-g` installs at user level, so the skill is available in every project. Drop it
@@ -40,6 +42,7 @@ Or install manually for Claude Code:
 ```bash
 cp -r skills/web-brand ~/.claude/skills/
 cp -r skills/scrinly ~/.claude/skills/
+cp -r skills/metamanager ~/.claude/skills/
 ```
 
 For claude.ai, add the skill to project knowledge, or paste the contents of
