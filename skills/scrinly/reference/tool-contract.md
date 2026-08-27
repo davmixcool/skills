@@ -34,7 +34,7 @@ Optional inputs:
 | `styleGuide` | boolean, `false` | Add the model-generated Visual Style Guide; implies regions |
 | `regenerate` | boolean, `false` | Bypass only the Style Guide cache; requires `styleGuide: true` |
 | `cache` | boolean, `false` | Opt into screenshot-cache reads and writes |
-| `async` | boolean, `false` | Return a job for later polling |
+| `async` | boolean, `false` | `false` waits up to 45 seconds on one durable queued job; `true` returns the accepted job immediately |
 
 The MCP server always forces stored JSON output under its controlled
 `mcp/screenshots` prefix and requests direct storage location metadata. It strips
@@ -79,6 +79,11 @@ The tool is free and account-scoped. Cross-account or unknown IDs remain `404`.
 Non-terminal results include `pollAfterMs`; terminal states are `completed`,
 `partial`, and `failed`.
 
+A default `async: false` capture can also return a non-terminal `jobId` when its
+45-second wait expires or status polling is interrupted. Resume that same job
+with this tool. Never repeat the original billable call merely because it did
+not finish within the MCP request.
+
 ## `get_usage`
 
 Input is an empty object. The tool is free and returns the authenticated
@@ -94,6 +99,11 @@ Successful tool calls return:
 - `structuredContent` containing `operation`, `httpStatus`, normalized `status`,
   pricing version, optional maximum credits or polling interval, and the safe
   core `result`.
+
+For capture, a terminal result uses the familiar completed or failed capture
+shape. A non-terminal result includes the durable `jobId` and `pollAfterMs`.
+Once the core accepts the job, its queue owns final credit settlement regardless
+of MCP client connectivity.
 
 The safe result removes account identity, credentials, page request URL, headers,
 cookies, storage credentials, and webhook data. Typed direct image URLs remain

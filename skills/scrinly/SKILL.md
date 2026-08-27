@@ -61,9 +61,13 @@ less common capture fields or when exact validation limits matter.
    user explicitly wants a fresh AI result.
 4. Use `cache: true` only when the user accepts screenshot-cache reuse.
    `regenerate` bypasses the Style Guide cache, not the screenshot cache.
-5. Prefer synchronous capture unless the user requests async behavior or the
-   workflow can retain and poll a job reliably.
-6. Return the direct `resource_link` artifacts and summarize dimensions,
+5. Use `async: false` by default. Scrinly submits one durable core job and waits
+   for up to 45 seconds. A terminal result keeps the normal capture shape; a
+   non-terminal result includes a `jobId` and `pollAfterMs`.
+6. If a capture returns a `jobId`, retain it and call `get_job_status`. Never
+   repeat `capture_screenshot` for that attempt. Use `async: true` only when the
+   caller wants the accepted job returned immediately.
+7. Return the direct `resource_link` artifacts and summarize dimensions,
    evidence components, terminal status, and actual `charged`, `refunded`, and
    `net` credits. Do not replace direct storage delivery with a proxy or base64.
 
@@ -73,13 +77,18 @@ error, and the refund instead of describing the entire capture as failed.
 
 ## Poll asynchronous work
 
-1. Retain the `jobId` returned by the billable tool.
+1. Retain the `jobId` returned by the billable tool, whether it came from an
+   explicit asynchronous request or the bounded wait for `async: false`.
 2. Call `get_job_status` with that exact ID.
 3. For a non-terminal result, wait for the returned `pollAfterMs` value before
    polling again. The current suggested interval is three seconds.
 4. Stop on `completed`, `partial`, or `failed`. Do not poll a terminal job.
 5. Present the final result and settlement from the status response. Polling is
    free and must never be counted as another capture or diff.
+
+The core queue owns final billing and refunds after it accepts a job. A client
+disconnect or interrupted bounded wait is not authorization to resubmit the
+billable operation.
 
 Read [reference/workflows.md](reference/workflows.md) for complete synchronous,
 asynchronous, Style Guide, and diff sequences.

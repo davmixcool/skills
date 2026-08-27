@@ -14,8 +14,15 @@ capture_screenshot({
 })
 ```
 
-Return the screenshot `resource_link`, dimensions and hash when present, and the
-actual credit settlement.
+With the default `async: false`, Scrinly submits one durable core job and waits
+up to 45 seconds. If it finishes during that window, return the screenshot
+`resource_link`, dimensions and hash when present, and the actual credit
+settlement.
+
+If the bounded wait ends first or status polling is interrupted, the result
+includes a durable `jobId` and `pollAfterMs`. Continue with `get_job_status`; do
+not submit another capture. The queue continues processing and owns the final
+billing or refund even if the MCP client disconnects.
 
 ## Full-page regions
 
@@ -69,6 +76,8 @@ credits rather than predicting the discount.
    settlement. Polling does not consume credits.
 
 Do not confuse the MCP protocol request ID with the Scrinly `jobId`.
+Explicit `async: true` returns the accepted job immediately instead of waiting
+up to 45 seconds for a terminal result.
 
 ## Visual comparison
 
