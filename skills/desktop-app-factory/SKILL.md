@@ -72,6 +72,7 @@ Read:
 - `references/analytics.md`
 - `references/privacy-security.md`
 - `references/distribution-signing.md`
+- `references/backend.md`
 - `references/launch-playbook.md`
 
 Produce or update these project artifacts when a writable repo exists:
@@ -212,7 +213,7 @@ Always apply these rules:
 
 ## Monetization rules
 
-Read `references/monetization.md` when pricing, trials, licensing, subscriptions, paid upgrades, or premium gates are part of the task.
+Read `references/monetization.md` when pricing, trials, licensing, subscriptions, paid upgrades, or premium gates are part of the task. Read `references/backend.md` before building the licence, update-feed, webhook, or AI-proxy endpoints those decisions imply.
 
 Defaults:
 - Prefer simple paid utility economics.
@@ -265,7 +266,7 @@ Defaults:
 - easy disable/delete/export where relevant
 - safe shell execution with explicit arguments; never concatenate untrusted input into commands
 - encrypt the local database when the app stores sensitive categories; secure storage covers tokens, not the database
-- never ship a provider API key inside the binary; put paid AI or email calls behind a server the app calls
+- never ship a provider API key inside the binary; put paid AI or email calls behind a server the app calls (see `references/backend.md`)
 - stored secrets need explicit Keep, Replace, and Clear semantics
 
 ## Distribution and update rules

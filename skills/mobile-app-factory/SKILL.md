@@ -239,7 +239,7 @@ Defaults:
 - minimum OS permissions
 - no forced account for local-only utility
 - encrypt the local database when the niche stores sensitive categories; secure storage alone covers tokens, not the database
-- never ship a provider API key inside the app; put paid AI/OCR/email calls behind a server the app calls
+- never ship a provider API key inside the app; put paid AI/OCR/email calls behind a server the app calls (see `references/backend.md`)
 - stored secrets need explicit Keep, Replace, and Clear semantics
 
 ## Current-information rule
@@ -288,6 +288,7 @@ Load only what the current task needs:
 - `references/monetization.md` — freemium/subscription/paywall strategy
 - `references/analytics.md` — event taxonomy and factory metrics
 - `references/privacy-security.md` — local-first security/privacy rules
+- `references/backend.md` — the small backend an app earns only when a feature requires it
 - `references/launch-playbook.md` — validation, store launch, acquisition, expansion gate
 - `references/new-app-checklist.md` — end-to-end launch checklist
 - `references/factory-todo.md` — recommended order for building the reusable core
