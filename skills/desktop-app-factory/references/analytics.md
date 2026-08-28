@@ -74,6 +74,33 @@ file_action_completed
 
 not the user's actual filenames.
 
+## Telemetry must never harm the app
+
+- Analytics, crash reporting and update checks must be non-blocking. A user
+  action never waits on a telemetry write.
+- The offline event queue is bounded and lossy by design. A desktop app can sit
+  offline for weeks; an unbounded queue becomes a disk complaint.
+- A failed telemetry write is not an error worth showing the user.
+- Telemetry that the user disabled must stop at the source, not merely be
+  discarded server-side.
+
+## Cost per active user
+
+Any app with hosted AI, sync, or a licence service has a per-user cost that
+determines whether one-time pricing or a lifetime tier is survivable — the
+decision `monetization.md` flags as risky without numbers.
+
+Record for every real provider attempt, including attempts whose output was
+rejected:
+- feature, provider and model
+- normalized token, byte, or request usage
+- estimated cost from a versioned pricing constant
+- outcome and typed error class
+
+Never record the content itself. Track cost per active installation and cost per
+paying customer alongside conversion; a utility can convert well and still lose
+money on its heaviest users.
+
 ## Post-launch decision inputs
 
 ### Kill

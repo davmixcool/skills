@@ -50,13 +50,22 @@ Offsets should be stored as rules, not hardcoded UI behavior.
 
 ## Completion behavior
 
-When user marks an event complete:
+When the user marks an event complete, steps 1-4 must commit as a single
+database transaction, with OS scheduling driven from the committed result:
 
-1. Save completion record.
-2. Cancel outstanding notifications.
-3. If recurring, calculate next occurrence.
-4. Schedule next reminders.
-5. Update timeline.
+1. Claim the occurrence with a compare-and-set on its status. If it is already
+   completed, stop — a second tap must not produce a second occurrence.
+2. Save the completion record.
+3. If recurring, calculate the next occurrence.
+4. Commit.
+5. Cancel obsolete notifications and schedule the next reminders from committed
+   state.
+6. Update timeline.
+
+A crash between the commit and the scheduling call is recoverable: the next
+reconciliation rebuilds the OS schedule from the database. A crash inside a
+non-transactional version of these steps leaves the user with two next
+occurrences, or none.
 
 ## Snooze behavior
 
@@ -90,6 +99,30 @@ If the app is opened after a due event:
 6. Reconcile after permission changes.
 7. Detect when notification permission is disabled.
 8. Show users when the OS prevents reliable delivery.
+
+## Notification identity and idempotency
+
+Reconciliation runs on launch, after update, after timezone change and after
+permission change. Every one of those is a retry over work that may already
+exist, so schedules need a stable identity or reconciliation will duplicate
+them.
+
+1. Derive each OS notification ID deterministically from the reminder rule, the
+   occurrence timestamp and a schedule version. Never from a random value, row
+   insertion order, or an incrementing counter.
+2. Reconciliation is then a diff: cancel scheduled IDs the database no longer
+   justifies, schedule the ones that are missing, leave matching ones untouched.
+   Running it twice in a row must produce no visible change.
+3. Persist the IDs actually handed to the OS, so the app can still cancel
+   schedules created by an earlier version whose derivation has since changed.
+4. Bump the schedule version when offset semantics or notification copy change,
+   so corrected schedules replace old ones instead of stacking on top of them.
+5. Treat "reconcile twice, see one notification" as a required test. Duplicate
+   notifications destroy trust in a reminder app faster than a missed one.
+
+The same rule applies to any queued or retried work the app performs — backup
+uploads, sync pushes, webhook calls. Give the operation a stable identifier and
+make repeating it harmless, rather than assuming it runs exactly once.
 
 ## Domain template example
 

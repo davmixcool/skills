@@ -54,7 +54,24 @@ Use this every time you create a new factory app.
 - [ ] Restart tested
 - [ ] Timezone handling tested
 - [ ] Reconciliation tested
+- [ ] Reconciliation run twice produces no duplicate notifications
+- [ ] Double-tapping complete produces exactly one next occurrence
 - [ ] Restore purchases tested
+- [ ] Restore applied twice does not extend the period or grant a second trial
+- [ ] App usable offline past the entitlement grace window without data loss
+- [ ] Upgrade from a previous version's database produces identical schedules
+
+## 6a. Review questions
+
+Answer concretely before shipping. A question without an answer is unfinished
+work, not a detail.
+
+- [ ] What happens when each remote dependency fails independently?
+- [ ] Can every mutation be retried safely?
+- [ ] Can a late sync message reverse newer state or resurrect deleted data?
+- [ ] Which store of truth wins for entitlement, and for how long offline?
+- [ ] Does this version change the meaning of data written by the previous one?
+- [ ] What does the app do when its provider bill is exhausted?
 
 ## 7. Store assets
 

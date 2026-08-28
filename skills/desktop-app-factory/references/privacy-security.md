@@ -54,6 +54,32 @@ Restrict executable allowlists where possible.
 
 Store tokens/API keys in platform-appropriate secure storage when possible. Do not keep production secrets in plain config, frontend bundles, analytics, or logs.
 
+## Encryption at rest
+
+Secure storage protects a token. It does not protect the SQLite database, and
+that is where clipboard history, action history, watched-path records and
+document metadata accumulate.
+
+- Encrypt the local database when the app stores sensitive categories, keeping
+  the key in the platform keychain or credential store.
+- Record a key version with the data so rotation does not require a destructive
+  migration.
+- A user-visible export is a decrypted copy of the same data. Say so at the
+  point of export.
+- Deleting a record must also delete its derived artifacts — thumbnails, caches,
+  temp files, and log lines that quoted it.
+
+## Updating a stored secret
+
+A settings field holding a token needs three explicit operations, never two:
+
+- **Keep** — the field was not submitted; leave the stored value untouched.
+- **Replace** — a new value was supplied.
+- **Clear** — the user explicitly removed it.
+
+Treating an omitted field as Clear silently disconnects integrations. The UI
+should show whether a secret is configured, never the value itself.
+
 ## Browser/app integrations
 
 OAuth tokens and imported data should be scoped narrowly. Ask only for permissions required by the current feature.

@@ -207,6 +207,8 @@ Always apply these rules:
 13. Ensure secondary app launches focus/reveal the existing instance instead of duplicating state when single-instance behavior is appropriate.
 14. Make background work observable through status, history, logs, or a recent-actions view when users need confidence.
 15. Any automation that can affect external systems or files needs an explicit failure and retry strategy.
+16. Retry is only safe if the operation is idempotent. Give each queued or repeatable action a stable operation ID, claim it before the side effect, and record completion, so a retry after a crash does not move the same file twice or re-post the same webhook.
+17. Re-validate stored destinations — watched paths, webhook targets, export endpoints — at execution time, not only when they were saved.
 
 ## Monetization rules
 
@@ -221,6 +223,12 @@ Defaults:
 - Avoid subscriptions whose only justification is “recurring revenue.”
 - Premium value should tie to time saved, automation volume, advanced workflows, sync/collaboration, AI cost, or professional use.
 
+Licensing and billing rules:
+- Selling direct makes you the merchant, with tax obligations from the first sale. Choose a merchant of record before pricing, since its cut changes the numbers.
+- Verify licence payloads locally by signature so an offline check still means something, and never trust the system clock alone for expiry.
+- Billing webhooks are retried: verify against raw bytes, deduplicate by delivery ID, and apply idempotently.
+- Fail open. A licence service that cannot be reached degrades premium features only — it never destroys local data or blocks export and delete.
+
 Do not treat reference price bands as current market facts. If exact pricing matters, validate current competitors and relevant store/provider terms before finalizing them.
 
 ## Analytics rules
@@ -234,6 +242,10 @@ At minimum track a privacy-conscious funnel such as:
 For background utilities, DAU can be misleading. Successful actions, retained installations, weekly active automations, time saved, error rate, and paid retention may matter more.
 
 Do not record clipboard contents, file contents, filenames, terminal commands, document text, or other sensitive user payloads in analytics unless the product explicitly requires it and the user has knowingly opted in.
+
+Telemetry never degrades the app: analytics, crash reporting and update checks are non-blocking, their failures invisible, and their offline queue bounded.
+
+If the app uses hosted AI or any per-use provider, record privacy-safe per-attempt cost so cost per installation can be weighed against pricing. A one-time or lifetime price is a guess without it.
 
 Read `references/analytics.md` before defining events or interpreting post-launch metrics.
 
@@ -252,6 +264,9 @@ Defaults:
 - explicit disclosure for remote AI processing
 - easy disable/delete/export where relevant
 - safe shell execution with explicit arguments; never concatenate untrusted input into commands
+- encrypt the local database when the app stores sensitive categories; secure storage covers tokens, not the database
+- never ship a provider API key inside the binary; put paid AI or email calls behind a server the app calls
+- stored secrets need explicit Keep, Replace, and Clear semantics
 
 ## Distribution and update rules
 
@@ -264,6 +279,10 @@ Defaults:
 - auto-updates must be signed/verified according to the current Tauri updater model
 - CI secrets for signing must never live in the repo
 - test clean install, upgrade, downgrade/recovery expectations, uninstall, and first-run behavior
+- released artifacts are immutable: never overwrite a published version key with new bytes — ship a new version instead
+- keep prior versions and their manifests available for skipped releases and rollback
+- serve the update feed from object storage or a CDN rather than application compute
+- migrations are forward-only and additive, so an older binary can still open a database the newer one wrote
 
 ## Current-information rule
 

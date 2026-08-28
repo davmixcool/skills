@@ -39,10 +39,59 @@ Only add when required for:
 - webhooks/integrations
 
 Suggested backend when needed:
-- Supabase or a minimal Node.js API
+- Supabase, a minimal Node.js API, or a small edge runtime such as Cloudflare
+  Workers
 - Postgres
 - Object storage
 - queue only if asynchronous processing becomes necessary
+
+### Backend seams
+
+Name the responsibility and its adapter interface first; the vendor is a
+current default behind that seam, not an architectural commitment. Vendors
+churn — see the current-information rule in `SKILL.md`.
+
+| Responsibility | Adapter interface | Current default |
+| --- | --- | --- |
+| Entitlement | `isEntitled(feature)` plus a refresh call returning status, period end and a cache timestamp | RevenueCat over StoreKit / Play Billing |
+| AI and OCR | one call returning normalized content, finish reason, usage and typed errors | server-side proxy; on-device OCR first |
+| Sync and backup | push/pull of versioned records plus tombstones | Supabase, or the smallest API that satisfies the contract |
+| Object storage | put, public or signed URL, metadata, version-aware delete | S3-compatible storage |
+| Transactional email | validated recipient, fixed template ID, bounded data | any provider behind a `sendEmail` adapter |
+| Product analytics | append-only event write, non-blocking | PostHog, Firebase, or a self-owned endpoint |
+
+No feature code should parse a provider's wire format, and no provider type
+should appear in a domain model. Replacing a vendor should mean writing one new
+adapter.
+
+### Never ship a provider key in the client
+
+An API key compiled into a Flutter app is extractable from the bundle. If a
+feature calls a paid AI, OCR or email provider, the key belongs on a server that
+the app calls instead. That server — not the client — owns the model, endpoint,
+timeout, output limit and retry policy, and it is also the only place per-user
+cost can be measured or capped.
+
+Shipping a key to save building a proxy converts an unbounded provider bill into
+someone else's free API.
+
+### Sync contract
+
+Sync is where local-first apps corrupt data. Decide these before writing the
+first upload, and record the decision in the app's README:
+
+- Every record carries `updatedAt` and an originating device ID.
+- Deletes are tombstones with a defined retention window, never immediate row
+  removal — otherwise a device that was offline re-uploads what another device
+  deleted.
+- Choose last-writer-wins or field-level merge **per entity type** and write the
+  choice down. Silent LWW on a notes field loses user text.
+- A late arriving message must never reverse newer state. Compare versions
+  before applying, and drop what is stale.
+- Sync is retriable and therefore at-least-once: pushes need stable operation
+  IDs so a redelivery is a no-op.
+- A sync failure must never block local use of the app, and must never delete
+  local data that has not been confirmed stored remotely.
 
 ## Layered architecture
 

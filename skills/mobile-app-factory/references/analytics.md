@@ -72,6 +72,32 @@ Track:
 ### Paid retention
 Most important long-term revenue metric.
 
+## Telemetry must never harm the app
+
+Analytics is not a feature the user asked for, so it never degrades one:
+
+- An analytics or crash SDK failure must not delay, block, or fail a user
+  action. Fire and forget; never await a network write on a UI path.
+- The offline event queue is bounded and lossy by design. Cap it, drop oldest
+  first, and never let it grow until it becomes a storage complaint.
+- A failed telemetry write is not an error worth surfacing to the user.
+
+## Cost per active user
+
+Any app with remote OCR, AI, sync or backup has a per-user cost that decides
+whether its pricing works — and whether a lifetime tier is survivable.
+
+Record for every real provider attempt, including attempts whose output was
+rejected as invalid:
+- feature, provider and model
+- normalized token, byte, or request usage
+- estimated cost from a versioned pricing constant
+- outcome and typed error class
+
+Never record the content itself. Cost per active user and cost per paying user
+belong in the factory dashboard next to conversion — a niche can convert well
+and still lose money per user.
+
 ## Experiments
 
 Test one major variable at a time:

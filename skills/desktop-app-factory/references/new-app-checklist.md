@@ -58,6 +58,22 @@
 - [ ] Updater tested from previous release if used
 - [ ] Clean install tested
 - [ ] Uninstall/reinstall tested
+- [ ] No published version key has ever been overwritten with new bytes
+- [ ] Licence check tested offline, and past the grace window
+- [ ] Repeating an interrupted automation does not duplicate its effect
+- [ ] No provider key present in the shipped binary or its config
+
+## Review questions
+
+Answer concretely before shipping. A question without an answer is unfinished
+work, not a detail.
+
+- [ ] What happens when each remote dependency fails independently?
+- [ ] Can every mutation be retried safely?
+- [ ] Can a late webhook revoke access granted by a newer event?
+- [ ] What is authoritative for entitlement, and for how long offline?
+- [ ] Can a user downgrade without corrupting the database the new version wrote?
+- [ ] Does this version change the meaning of data written by the previous one?
 
 ## Launch
 - [ ] Landing page

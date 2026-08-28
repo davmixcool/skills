@@ -37,6 +37,34 @@ Treat potentially sensitive information conservatively even when not legally cla
 9. Keep third-party SDK count low.
 10. Document every external processor used.
 
+## Encryption at rest
+
+Platform secure storage protects tokens. It does not protect the database, and
+the database is where the sensitive fields listed above actually live.
+
+- If the app stores potentially sensitive categories, encrypt the local database
+  itself (SQLCipher or an equivalent supported by the Drift setup), keeping the
+  key in platform secure storage.
+- Record a key version alongside the data so the key can be rotated without a
+  destructive migration.
+- Encrypt anything that leaves the device in transit and at rest, and state the
+  retention period.
+- A backup file the user exports is a copy of the same sensitive data. Say so at
+  the moment of export, and prefer an encrypted export where the format allows.
+
+## Updating a stored secret
+
+An API key or account token in settings needs three explicit operations, never
+two:
+
+- **Keep** — the field was not submitted; leave the stored value untouched.
+- **Replace** — a new value was supplied.
+- **Clear** — the user explicitly removed it.
+
+Treating an omitted field as Clear silently signs users out. Treating it as
+Replace with an empty string corrupts the record. APIs and settings screens
+should expose whether a secret is configured, never the value itself.
+
 ## AI/OCR disclosure
 
 If a photo/document is processed remotely, tell the user:

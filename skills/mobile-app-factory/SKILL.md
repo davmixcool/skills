@@ -179,11 +179,13 @@ Always apply these when designing or implementing reminders:
 3. On completion, record the action, cancel obsolete notifications, calculate the next occurrence if recurring, and schedule the next reminders.
 4. Missed due events become overdue; never silently discard them.
 5. Reconcile scheduled notifications after relevant app launches/updates, event changes, timezone changes, and permission changes.
-6. Detect disabled notification permissions and show a recoverable state.
-7. Separate date-based, interval-based, usage-based, and state-based reminder semantics. Do not pretend usage/state triggers are solved by date scheduling.
-8. V1 should normally prioritize date- and interval-based reminders unless usage/state triggers are essential to the niche promise.
-9. Store enough information to rebuild the OS notification schedule from the database.
-10. Test real-device behavior where OS scheduling/background constraints matter.
+6. Derive OS notification IDs deterministically from rule, occurrence, and schedule version, so reconciliation is a diff rather than a second scheduling pass. Running reconciliation twice must not produce duplicate notifications.
+7. Completion is one transaction: claim the occurrence, record the action, compute the next occurrence, commit, then schedule from committed state. A second tap must not create a second occurrence.
+8. Detect disabled notification permissions and show a recoverable state.
+9. Separate date-based, interval-based, usage-based, and state-based reminder semantics. Do not pretend usage/state triggers are solved by date scheduling.
+10. V1 should normally prioritize date- and interval-based reminders unless usage/state triggers are essential to the niche promise.
+11. Store enough information to rebuild the OS notification schedule from the database.
+12. Test real-device behavior where OS scheduling/background constraints matter.
 
 Read `references/reminder-engine.md` before changing reminder scheduling logic.
 
@@ -201,6 +203,13 @@ Defaults:
 
 Do not treat the reference price bands as current market facts. If exact pricing recommendations matter, validate current competitors/store norms before finalizing them.
 
+Entitlement rules:
+- The store is the merchant of record for in-app digital goods. Never wire an external payment provider into an app-store binary to sell in-app digital content.
+- Treat cached entitlement as a bounded cache with an explicit offline grace window, not a source of truth.
+- A billing check that cannot reach the network degrades premium features only. It never deletes local data or blocks export, delete, or existing reminders.
+- Restores and redelivered receipts are at-least-once; applying one twice must not extend a period or grant a second trial.
+- Never trust the device clock alone for expiry.
+
 ## Analytics rules
 
 The north-star behavior is: **the user successfully delegates a recurring responsibility to the app**.
@@ -210,6 +219,10 @@ At minimum track the funnel:
 `first_open -> entity_added -> reminder_generated -> reminder_enabled -> reminder_action -> paywall -> paid`
 
 For low-frequency utilities, do not over-index on DAU. Future reminders scheduled, active tracked entities, reminder action rate, paid retention, and retained installation may be more meaningful.
+
+Telemetry never degrades the app: analytics and crash reporting must be non-blocking, their failures invisible to the user, and their offline queue bounded and lossy by design.
+
+If the app uses remote OCR, AI, sync, or backup, record privacy-safe per-attempt cost so cost per active user can be compared with conversion. Pricing decisions — especially a lifetime tier — are not verifiable without it.
 
 Read `references/analytics.md` before defining events or interpreting post-launch metrics.
 
@@ -225,6 +238,9 @@ Defaults:
 - export/delete controls
 - minimum OS permissions
 - no forced account for local-only utility
+- encrypt the local database when the niche stores sensitive categories; secure storage alone covers tokens, not the database
+- never ship a provider API key inside the app; put paid AI/OCR/email calls behind a server the app calls
+- stored secrets need explicit Keep, Replace, and Clear semantics
 
 ## Current-information rule
 
