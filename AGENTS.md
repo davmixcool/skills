@@ -17,15 +17,28 @@ skills/
     scripts/              # Optional: executable scripts
       {script-name}.sh    # Bash scripts
       {script-name}.mjs   # Node scripts
+      {script-name}.py    # Python scripts
     reference/            # Optional: supporting docs loaded on demand
+    assets/               # Optional: templates the skill fills in and emits
+    agents/               # Optional: per-agent config (e.g. openai.yaml)
+    example/              # Optional: runnable sample input
     lib/                  # Optional: shared code for scripts
 ```
+
+`reference/` and `references/` are both in use and both fine — match whichever
+the skill already uses rather than renaming, since every path in its `SKILL.md`
+points at it. Only `SKILL.md` itself is mandatory; a skill that is purely
+instructions (see `metamanager`, `scrinly`) needs nothing else.
+
+A per-skill `README.md` is optional. `SKILL.md` is what the agent loads; a
+README is for humans browsing the repo on GitHub, and is worth adding only when
+the skill is large enough that its SKILL.md is a poor introduction.
 
 ### Naming Conventions
 
 - **Skill directory**: `kebab-case` (e.g., `web-brand`, `log-monitor`)
 - **SKILL.md**: Always uppercase, always this exact filename
-- **Scripts**: `kebab-case.sh` or `kebab-case.mjs` (e.g., `deploy.sh`, `collect-signals.mjs`)
+- **Scripts**: `kebab-case.sh`, `kebab-case.mjs`, or `snake_case.py` (e.g., `deploy.sh`, `collect-signals.mjs`, `score_idea.py`)
 
 ### SKILL.md Format
 
@@ -82,6 +95,8 @@ Skills are loaded on-demand — only the skill name and description are loaded a
 
 - Bash scripts: use `#!/bin/bash` and `set -e`
 - Node scripts: use `#!/usr/bin/env node` and `.mjs`
+- Python scripts: use `#!/usr/bin/env python3` and stick to the standard
+  library, so there is nothing for the user to install
 - Write status messages to stderr
 - Write machine-readable output (JSON) to stdout
 - Include a cleanup trap for temp files when scripts create them
@@ -92,10 +107,16 @@ Skills are loaded on-demand — only the skill name and description are loaded a
 Document skills.sh installation for public skills:
 
 ```bash
-npx skills add davmixcool/skills --skill {skill-name}
+npx skills add davmixcool/skills --skill {skill-name} -g
 ```
 
-For manual installs, document the native path when the skill needs one.
+`-g` installs at user level; without it the skill lands in the current project
+under `./.agents/skills/`. The CLI itself needs Node 20.12+.
+
+For manual installs, document the native path when the skill needs one. If the
+skill depends on an MCP server or any other runtime the repo does not ship,
+state that plainly in `SKILL.md` and add a row to the README's requirements
+table.
 
 **Claude Code:**
 ```bash

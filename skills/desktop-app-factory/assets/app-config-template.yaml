@@ -1,0 +1,26 @@
+app:
+  name: Example Utility
+  identifier: com.example.utility
+  promise: Remove one recurring computer annoyance
+
+targets:
+  macos: true
+  windows: true
+  linux: false
+
+capabilities:
+  tray: false
+  global_shortcuts: false
+  autostart: false
+  notifications: false
+  clipboard: false
+  filesystem: false
+  watcher: false
+  single_instance: true
+
+monetization:
+  model: one_time
+
+privacy:
+  analytics: minimal
+  local_first: true

@@ -1,0 +1,14 @@
+app_name: "[App Name]"
+slug: "[app-slug]"
+entity_name: "[Tracked Entity]"
+primary_promise: "[Outcome]"
+primary_acquisition_hook: "[Pain hook]"
+free_entity_limit: 1
+premium_entity_limit: unlimited
+primary_event_types:
+  - id: "[event_type]"
+    due_semantics: "date"
+    default_offsets_days: [30, 7, 1]
+    recurring: false
+premium_features:
+  - "[premium feature]"
