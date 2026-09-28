@@ -1,7 +1,8 @@
 # Scrinly MCP Tool Contract
 
 Use this reference when exact inputs, defaults, output structure, or constraints
-matter. The production beta exposes exactly four tools.
+matter. The integration contract contains five tools; discover the deployed schema
+before relying on newly added selectors.
 
 ## `capture_screenshot`
 
@@ -69,11 +70,43 @@ The two screenshots must have equal width; different full-page heights are
 supported. The MCP server sanitizes manifests down to geometry and hashes and
 stores any visualization under `mcp/diffs` with a direct provider URL.
 
+## `transform_screenshot`
+
+Requires an account-owned `screenshotId` and `maxCredits`. Use optional `source`
+plus `operations`, or an `outputs` array of up to 16 such objects, never both.
+Source defaults to the screenshot. Other selectors are `region` with `regionId`,
+`part` with `regionId` and `partId`, or `bounds` with integer `x/y/width/height`.
+When supported by the discovered schema, `stored-part` uses the saved encoded crop
+identified by `regionId` and `partId` rather than original screenshot pixels.
+
+Up to four ordered operations: `crop` in current intermediate coordinates,
+`resize` with width/height and contain (default), cover, or fill; optional `format`
+appears once, last, with jpeg/png/webp and quality (default 80). An omitted resize
+dimension preserves aspect ratio. Optional backgrounds are six-digit hex colors.
+PNG/WebP preserve transparency; JPEG defaults to white. Output is always stored
+under `mcp/transforms`; no URL sources, storage overrides, credentials or webhooks.
+
+Defaults: `cache:false`, `async:false`. The core always receives one durable job;
+the default MCP wait is bounded to 45 seconds. Resume returned job IDs by polling.
+Reserve one credit per output even on potential cache hits. Verified hits reuse
+asset ID and expiry and refund their reservation. Return successful partial assets
+and each failed output's typed error and settlement. No refund is assumed.
+
+Source limits: 24 MP and 8 MiB encoded, 32768 pixels per axis. Intermediate/final
+outputs: 8 MP each, 32 MP total final outputs, 8 MiB encoded each. Small region
+selection does not bypass the whole-source limit for `screenshot`, `region`,
+`part`, or `bounds`. Explicit `stored-part` applies source limits to the saved
+crop, so an oversized parent can still provide an eligible crop. Its operation
+coordinates start at the crop's local origin; provenance preserves original
+screenshot bounds, parent hash, and crop hash. Saved JPEG crops have already
+been encoded. No automatic substitution, stitching, or recapture is supported.
+OAuth needs `transforms:write`.
+
 ## `get_job_status`
 
 Input:
 
-- `jobId`: UUID returned by an asynchronous capture or diff.
+- `jobId`: UUID returned by an asynchronous capture, diff, or transform.
 
 The tool is free and account-scoped. Cross-account or unknown IDs remain `404`.
 Non-terminal results include `pollAfterMs`; terminal states are `completed`,
@@ -95,7 +128,7 @@ state. It does not return the account email or identifier.
 Successful tool calls return:
 
 - concise text content;
-- `resource_link` blocks for direct JPEG or PNG assets; and
+- `resource_link` blocks for direct JPEG, PNG, or WebP assets; and
 - `structuredContent` containing `operation`, `httpStatus`, normalized `status`,
   pricing version, optional maximum credits or polling interval, and the safe
   core `result`.

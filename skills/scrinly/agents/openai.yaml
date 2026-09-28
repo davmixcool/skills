@@ -1,13 +1,13 @@
 interface:
   display_name: "Scrinly Screenshots"
-  short_description: "Capture, inspect, and compare webpages with Scrinly"
+  short_description: "Capture, compare, and transform Scrinly screenshots"
   default_prompt: "Use $scrinly to capture a stored screenshot and return visual evidence with a safe credit limit."
 
 dependencies:
   tools:
     - type: "mcp"
       value: "scrinly"
-      description: "Scrinly's production screenshot and visual-comparison MCP server"
+      description: "Scrinly's screenshot, comparison, and transformation MCP server"
       transport: "streamable_http"
       url: "https://mcp.scrinly.com/mcp"
 

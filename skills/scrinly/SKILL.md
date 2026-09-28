@@ -1,6 +1,6 @@
 ---
 name: scrinly
-description: Use Scrinly's remote MCP server to capture stored webpage screenshots, generate model-sized regions or Visual Style Guides, compare stored screenshots, poll asynchronous jobs, and inspect credit usage. Use when the user asks for real webpage visual evidence, full-page captures, device screenshots, page regions, visual regression diffs, overlays, heatmaps, masks, Scrinly job status, or Scrinly credit usage. Do not use for editing local images or reconstructing webpages from screenshots.
+description: Use Scrinly's remote MCP server to capture, inspect, compare, crop, resize, or encode stored webpage screenshots and regions, poll jobs, and inspect credits. Use for webpage visual evidence, Visual Style Guides, visual diffs, or deterministic transformations of an existing Scrinly screenshotId. Not for local image editing, arbitrary image uploads, or reconstructing webpages.
 ---
 
 # Scrinly
@@ -13,7 +13,7 @@ locally.
 
 1. Confirm the Scrinly MCP server is connected. Let the MCP client supply its
    bearer credential; never request, echo, or place an API key in tool arguments.
-2. Treat `capture_screenshot` and `compare_screenshots` as billable. Call them
+2. Treat `capture_screenshot`, `compare_screenshots`, and `transform_screenshot` as billable. Call them
    only when the user requested the operation or clearly authorized it.
 3. Add only the capabilities the user requested. Do not silently enable regions,
    design evidence, a Style Guide, multiple devices, or repeated captures.
@@ -28,7 +28,8 @@ locally.
 | --- | --- | ---: |
 | Capture and store a webpage image | `capture_screenshot` | 1+ credits |
 | Compare two stored screenshots | `compare_screenshots` | 1 credit |
-| Poll an asynchronous capture or diff | `get_job_status` | Free |
+| Transform an existing screenshot or region | `transform_screenshot` | 1 per new output |
+| Poll an asynchronous capture, diff, or transform | `get_job_status` | Free |
 | Read current allowance and usage | `get_usage` | Free |
 
 Use these maximums for `capture_screenshot`:
@@ -75,6 +76,29 @@ Treat a partial add-on failure as a usable result when the primary screenshot
 exists. Report the screenshot, any successful regions, the typed component
 error, and the refund instead of describing the entire capture as failed.
 
+## Transform existing screenshots
+
+Reuse an account-owned `screenshotId` and its manifest when available. Do not
+capture again just to crop, resize, or change encoding. Select actual region/part
+IDs from the manifest; never invent IDs or bounds. Missing or expired references
+need separately authorized recapture, not automatic retries.
+
+Read [reference/tool-contract.md](reference/tool-contract.md) for transform inputs
+and [reference/workflows.md](reference/workflows.md) for examples. The 24 MP / 8 MiB
+limit applies to the whole screenshot for original-pixel selectors. If the discovered
+schema supports `stored-part`, an eligible saved crop can be used explicitly from an
+oversized parent. Explain the encoded-crop tradeoff; never silently substitute it.
+If no eligible supported source exists, ask before recapturing. `contain` can add
+padding; `cover` can remove content. Neither creates new page detail or responsive
+layouts. No semantic focus or natural-language planning is available.
+
+Set `maxCredits` to the output count, including when `cache:true` is enabled.
+Verified hits and failed outputs refund their reservations; report actual credits
+and preserve successful siblings. Retain asset IDs, provenance, and original expiry.
+Poll the same accepted job after the bounded wait; never resubmit after disconnect.
+OAuth requires `transforms:write`; ask for reauthorization if absent, never try to
+bypass it. If the tool is not deployed/discoverable yet, report that limitation.
+
 ## Poll asynchronous work
 
 1. Retain the `jobId` returned by the billable tool, whether it came from an
@@ -96,7 +120,7 @@ asynchronous, Style Guide, and diff sequences.
 ## Compare screenshots
 
 1. Use the `media` object from each stored Scrinly capture. Pass the matching
-   `regions-v1` manifest from the same response when both captures have one.
+   `regions-v1` or `regions-v2` manifest from the same response when both captures have one.
 2. Never mix a region manifest with a different screenshot. The screenshot hash
    is an integrity boundary, not a hint.
 3. Use `perceptual` for human-facing visual regression work and `pixel` when

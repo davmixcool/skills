@@ -110,6 +110,58 @@ geometry and hashes.
 If only one valid manifest exists, omit both manifests and allow whole-image
 comparison. Never pair a screenshot with regions from another capture.
 
+## Reuse a screenshot for transformations
+
+Use IDs from the user's actual stored result; the following are placeholders:
+
+```json
+{
+  "screenshotId": "scr_REPLACE_WITH_RETURNED_ID",
+  "source": {"type":"region","regionId":"REPLACE_WITH_RETURNED_REGION_ID"},
+  "operations": [
+    {"resize":{"width":1200,"height":630,"fit":"contain"}},
+    {"format":{"type":"webp","quality":80}}
+  ],
+  "cache": true,
+  "maxCredits": 1
+}
+```
+
+For two formats, replace source/operations with two `outputs` entries, each
+containing the selected source and operations; encode one as PNG and one as WebP.
+Set `maxCredits:2`. Do not add a second output without the user's request.
+
+When explicitly testing cache reuse, repeat the same request only after the first
+job completes. Check `cacheHit`, unchanged asset ID/expiry, and returned net credits;
+do not assume a hit or a zero-credit reservation. For an unfinished result, poll
+its existing job instead of repeating the transform. Do not recapture to recover
+from a timeout. Keep partial successful outputs and report per-output refunds.
+
+### Explicitly transform a saved crop from an oversized screenshot
+
+Confirm `stored-part` is in the discovered tool schema and the user accepts using
+the previously encoded crop. Choose an actual part from the returned manifest
+with valid media dimensions, byte count and hash. Do not invent IDs.
+
+```json
+{
+  "screenshotId": "scr_REPLACE_WITH_RETURNED_ID",
+  "source": {
+    "type": "stored-part",
+    "regionId": "REPLACE_WITH_RETURNED_REGION_ID",
+    "partId": "REPLACE_WITH_RETURNED_PART_ID"
+  },
+  "operations": [{"format":{"type":"webp","quality":80}}],
+  "maxCredits": 1
+}
+```
+
+The crop itself must fit 24 MP / 8 MiB. A JPEG crop has already undergone lossy
+encoding; conversion does not recover original detail. Crop operations use local
+coordinates, while provenance retains its position in the parent screenshot.
+If the deployed schema lacks this selector, explain the limitation rather than
+switching to `part` or making a new capture.
+
 ## Budget-aware execution
 
 When the user provides a budget:
