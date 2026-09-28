@@ -1,0 +1,35 @@
+{
+  "properties": {
+    "name": "Just remind me"
+  },
+  "sequence": [
+    {
+      "id": "few-idle-3",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 3,
+        "idle_time_hours": 0,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-nudge-4",
+      "componentType": "task",
+      "type": "nudge",
+      "name": "Notify",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "nudge",
+        "message": "You haven’t opened this tab in three days.",
+        "sound": "off"
+      }
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+{
+  "properties": {
+    "name": "Reddit and X go, GitHub stays"
+  },
+  "sequence": [
+    {
+      "id": "few-rule-72",
+      "componentType": "switch",
+      "type": "rule",
+      "name": "Reddit or X",
+      "properties": {
+        "type": "logic",
+        "isDeletable": true,
+        "task": "rule",
+        "rules": [],
+        "conditions": [
+          {
+            "type": "domain",
+            "value": "reddit.com"
+          },
+          {
+            "type": "domain",
+            "value": "x.com"
+          },
+          {
+            "type": "domain",
+            "value": "twitter.com"
+          }
+        ],
+        "condition_logic": "OR"
+      },
+      "branches": {
+        "If": [
+          {
+            "id": "few-idle-70",
+            "componentType": "task",
+            "type": "idle",
+            "name": "Unused for",
+            "properties": {
+              "type": "trigger",
+              "isLocked": false,
+              "isDeletable": true,
+              "task": "idle",
+              "idle_time_days": 0,
+              "idle_time_hours": 0,
+              "idle_time_minutes": 30
+            }
+          },
+          {
+            "id": "few-close-71",
+            "componentType": "task",
+            "type": "close",
+            "name": "Close",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "close",
+              "min_open_tabs": 0,
+              "ignore_pinned_tabs": true,
+              "ignore_grouped_tabs": true,
+              "ignore_tabs_playing_audio": true
+            }
+          }
+        ],
+        "Else": []
+      }
+    },
+    {
+      "id": "few-rule-77",
+      "componentType": "switch",
+      "type": "rule",
+      "name": "GitHub",
+      "properties": {
+        "type": "logic",
+        "isDeletable": true,
+        "task": "rule",
+        "rules": [],
+        "conditions": [
+          {
+            "type": "domain",
+            "value": "github.com"
+          }
+        ],
+        "condition_logic": "OR"
+      },
+      "branches": {
+        "If": [
+          {
+            "id": "few-idle-73",
+            "componentType": "task",
+            "type": "idle",
+            "name": "Unused for",
+            "properties": {
+              "type": "trigger",
+              "isLocked": false,
+              "isDeletable": true,
+              "task": "idle",
+              "idle_time_days": 7,
+              "idle_time_hours": 0,
+              "idle_time_minutes": 0
+            }
+          },
+          {
+            "id": "few-bin-74",
+            "componentType": "task",
+            "type": "bin",
+            "name": "Move to Bin",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "bin",
+              "ignore_pinned_tabs": true,
+              "ignore_grouped_tabs": true,
+              "ignore_tabs_playing_audio": true,
+              "discard": true
+            }
+          },
+          {
+            "id": "few-in_bin-75",
+            "componentType": "task",
+            "type": "in_bin",
+            "name": "In Bin for",
+            "properties": {
+              "type": "trigger",
+              "isLocked": false,
+              "isDeletable": true,
+              "task": "in_bin",
+              "bin_time_days": 5,
+              "bin_time_hours": 0,
+              "bin_time_minutes": 0
+            }
+          },
+          {
+            "id": "few-close-76",
+            "componentType": "task",
+            "type": "close",
+            "name": "Close",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "close",
+              "min_open_tabs": 0,
+              "ignore_pinned_tabs": true,
+              "ignore_grouped_tabs": false,
+              "ignore_tabs_playing_audio": true
+            }
+          }
+        ],
+        "Else": []
+      }
+    },
+    {
+      "id": "few-idle-78",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 3,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-bin-79",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-80",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-81",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

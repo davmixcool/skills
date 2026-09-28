@@ -1,0 +1,53 @@
+{
+  "properties": {
+    "name": "Duplicate killer"
+  },
+  "sequence": [
+    {
+      "id": "dup-trigger",
+      "componentType": "switch",
+      "type": "duplicate",
+      "name": "Duplicate",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "duplicate",
+        "condition": ""
+      },
+      "branches": {
+        "Yes": [
+          {
+            "id": "dup-notify",
+            "componentType": "task",
+            "type": "nudge",
+            "name": "Notify",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "nudge",
+              "message": "Closing duplicate tab",
+              "sound": "off"
+            }
+          },
+          {
+            "id": "dup-close",
+            "componentType": "task",
+            "type": "close",
+            "name": "Close",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "close",
+              "min_open_tabs": 1,
+              "ignore_pinned_tabs": true,
+              "ignore_grouped_tabs": false,
+              "ignore_tabs_playing_audio": false
+            }
+          }
+        ],
+        "No": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "properties": {
+    "name": "End-of-day tidy"
+  },
+  "sequence": [
+    {
+      "id": "few-schedule-7",
+      "componentType": "task",
+      "type": "schedule",
+      "name": "Schedule",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "schedule",
+        "schedule_type": "weekly",
+        "time": "18:00",
+        "days_of_week": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "interval_minutes": 60,
+        "day_of_month": 1,
+        "target_timestamp": "",
+        "rules": [],
+        "open_urls": [],
+        "filter_pinned": false,
+        "filter_grouped": false,
+        "filter_audible": false
+      }
+    },
+    {
+      "id": "few-bin-8",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-9",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-10",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

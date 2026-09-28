@@ -1,0 +1,36 @@
+{
+  "properties": {
+    "name": "Memory saver"
+  },
+  "sequence": [
+    {
+      "id": "few-idle-5",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 0,
+        "idle_time_minutes": 30
+      }
+    },
+    {
+      "id": "few-sleep-6",
+      "componentType": "task",
+      "type": "sleep",
+      "name": "Sleep",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "sleep",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

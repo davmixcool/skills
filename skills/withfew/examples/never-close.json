@@ -1,0 +1,37 @@
+{
+  "properties": {
+    "name": "Never close anything"
+  },
+  "sequence": [
+    {
+      "id": "few-idle-1",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 3,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-bin-2",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    }
+  ]
+}

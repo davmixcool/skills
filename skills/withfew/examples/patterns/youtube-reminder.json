@@ -1,0 +1,117 @@
+{
+  "properties": {
+    "name": "YouTube reminder"
+  },
+  "sequence": [
+    {
+      "id": "few-rule-84",
+      "componentType": "switch",
+      "type": "rule",
+      "name": "YouTube",
+      "properties": {
+        "type": "logic",
+        "isDeletable": true,
+        "task": "rule",
+        "rules": [],
+        "conditions": [
+          {
+            "type": "domain",
+            "value": "youtube.com"
+          }
+        ],
+        "condition_logic": "OR"
+      },
+      "branches": {
+        "If": [
+          {
+            "id": "few-time_spent-82",
+            "componentType": "task",
+            "type": "time_spent",
+            "name": "Time Spent",
+            "properties": {
+              "type": "trigger",
+              "isLocked": false,
+              "isDeletable": true,
+              "task": "time_spent",
+              "time": 20
+            }
+          },
+          {
+            "id": "few-nudge-83",
+            "componentType": "task",
+            "type": "nudge",
+            "name": "Notify",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "nudge",
+              "message": "20 minutes on YouTube.",
+              "sound": "off"
+            }
+          }
+        ],
+        "Else": []
+      }
+    },
+    {
+      "id": "few-idle-85",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 3,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-bin-86",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-87",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-88",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "properties": {
+    "name": "Search sweeper"
+  },
+  "sequence": [
+    {
+      "id": "few-idle-34",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 0,
+        "idle_time_minutes": 30
+      }
+    },
+    {
+      "id": "few-rule-36",
+      "componentType": "switch",
+      "type": "rule",
+      "name": "Search results",
+      "properties": {
+        "type": "logic",
+        "isDeletable": true,
+        "task": "rule",
+        "rules": [],
+        "conditions": [
+          {
+            "type": "url_contains",
+            "value": "google.com/search"
+          },
+          {
+            "type": "url_contains",
+            "value": "bing.com/search"
+          },
+          {
+            "type": "url_contains",
+            "value": "duckduckgo.com/?"
+          },
+          {
+            "type": "url_contains",
+            "value": "search.brave.com/search"
+          },
+          {
+            "type": "url_contains",
+            "value": "search.yahoo.com/search"
+          }
+        ],
+        "condition_logic": "OR"
+      },
+      "branches": {
+        "If": [],
+        "Else": [
+          {
+            "id": "few-idle-35",
+            "componentType": "task",
+            "type": "idle",
+            "name": "Unused for",
+            "properties": {
+              "type": "trigger",
+              "isLocked": false,
+              "isDeletable": true,
+              "task": "idle",
+              "idle_time_days": 0,
+              "idle_time_hours": 3,
+              "idle_time_minutes": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "few-bin-37",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-38",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-39",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

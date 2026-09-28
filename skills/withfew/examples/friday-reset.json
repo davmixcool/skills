@@ -1,0 +1,89 @@
+{
+  "properties": {
+    "name": "Friday reset"
+  },
+  "sequence": [
+    {
+      "id": "few-schedule-11",
+      "componentType": "task",
+      "type": "schedule",
+      "name": "Schedule",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "schedule",
+        "schedule_type": "weekly",
+        "time": "17:00",
+        "days_of_week": [
+          5
+        ],
+        "interval_minutes": 60,
+        "day_of_month": 1,
+        "target_timestamp": "",
+        "rules": [],
+        "open_urls": [],
+        "filter_pinned": false,
+        "filter_grouped": false,
+        "filter_audible": false
+      }
+    },
+    {
+      "id": "few-bookmark-12",
+      "componentType": "task",
+      "type": "bookmark",
+      "name": "Bookmark",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bookmark",
+        "folder": null
+      }
+    },
+    {
+      "id": "few-bin-13",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-14",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 7,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-15",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

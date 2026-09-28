@@ -1,0 +1,7 @@
+interface:
+  display_name: "WithFew"
+  short_description: "Write WithFew workflows: automatic rules for Chrome tabs, checked and ready to import"
+  default_prompt: "Use $withfew to make me a WithFew workflow: put social media to sleep after 20 minutes, and move everything else to Bin after 3 hours."
+
+policy:
+  allow_implicit_invocation: true

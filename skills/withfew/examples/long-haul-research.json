@@ -1,0 +1,134 @@
+{
+  "properties": {
+    "name": "Long-haul research"
+  },
+  "sequence": [
+    {
+      "id": "few-idle-23",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 3,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-rule-25",
+      "componentType": "switch",
+      "type": "rule",
+      "name": "Docs, papers or wiki",
+      "properties": {
+        "type": "logic",
+        "isDeletable": true,
+        "task": "rule",
+        "rules": [],
+        "conditions": [
+          {
+            "type": "domain",
+            "value": "wikipedia.org"
+          },
+          {
+            "type": "domain",
+            "value": "arxiv.org"
+          },
+          {
+            "type": "domain",
+            "value": "scholar.google.com"
+          },
+          {
+            "type": "domain",
+            "value": "developer.mozilla.org"
+          },
+          {
+            "type": "domain",
+            "value": "stackoverflow.com"
+          },
+          {
+            "type": "domain",
+            "value": "readthedocs.io"
+          },
+          {
+            "type": "domain",
+            "value": "github.com"
+          },
+          {
+            "type": "domain",
+            "value": "notion.so"
+          }
+        ],
+        "condition_logic": "OR"
+      },
+      "branches": {
+        "If": [
+          {
+            "id": "few-idle-24",
+            "componentType": "task",
+            "type": "idle",
+            "name": "Unused for",
+            "properties": {
+              "type": "trigger",
+              "isLocked": false,
+              "isDeletable": true,
+              "task": "idle",
+              "idle_time_days": 7,
+              "idle_time_hours": 0,
+              "idle_time_minutes": 0
+            }
+          }
+        ],
+        "Else": []
+      }
+    },
+    {
+      "id": "few-bin-26",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-27",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-28",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

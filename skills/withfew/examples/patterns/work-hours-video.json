@@ -1,0 +1,138 @@
+{
+  "properties": {
+    "name": "Video sleeps in work hours"
+  },
+  "sequence": [
+    {
+      "id": "few-rule-100",
+      "componentType": "switch",
+      "type": "rule",
+      "name": "YouTube in work hours",
+      "properties": {
+        "type": "logic",
+        "isDeletable": true,
+        "task": "rule",
+        "rules": [],
+        "conditions": [
+          {
+            "type": "domain",
+            "value": [
+              "youtube.com"
+            ]
+          },
+          {
+            "type": "day_of_week",
+            "days": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "type": "time_of_day",
+            "operator": "between",
+            "time_start": "09:00",
+            "time_end": "17:00"
+          }
+        ],
+        "condition_logic": "AND"
+      },
+      "branches": {
+        "If": [
+          {
+            "id": "few-idle-98",
+            "componentType": "task",
+            "type": "idle",
+            "name": "Unused for",
+            "properties": {
+              "type": "trigger",
+              "isLocked": false,
+              "isDeletable": true,
+              "task": "idle",
+              "idle_time_days": 0,
+              "idle_time_hours": 0,
+              "idle_time_minutes": 10
+            }
+          },
+          {
+            "id": "few-sleep-99",
+            "componentType": "task",
+            "type": "sleep",
+            "name": "Sleep",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "sleep",
+              "ignore_pinned_tabs": true,
+              "ignore_grouped_tabs": true,
+              "ignore_tabs_playing_audio": true
+            }
+          }
+        ],
+        "Else": []
+      }
+    },
+    {
+      "id": "few-idle-101",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 3,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-bin-102",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-103",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-104",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

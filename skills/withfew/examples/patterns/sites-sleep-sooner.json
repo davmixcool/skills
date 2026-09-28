@@ -1,0 +1,124 @@
+{
+  "properties": {
+    "name": "Streaming sleeps sooner"
+  },
+  "sequence": [
+    {
+      "id": "few-rule-58",
+      "componentType": "switch",
+      "type": "rule",
+      "name": "YouTube or Netflix",
+      "properties": {
+        "type": "logic",
+        "isDeletable": true,
+        "task": "rule",
+        "rules": [],
+        "conditions": [
+          {
+            "type": "domain",
+            "value": "youtube.com"
+          },
+          {
+            "type": "domain",
+            "value": "netflix.com"
+          }
+        ],
+        "condition_logic": "OR"
+      },
+      "branches": {
+        "If": [
+          {
+            "id": "few-idle-56",
+            "componentType": "task",
+            "type": "idle",
+            "name": "Unused for",
+            "properties": {
+              "type": "trigger",
+              "isLocked": false,
+              "isDeletable": true,
+              "task": "idle",
+              "idle_time_days": 0,
+              "idle_time_hours": 0,
+              "idle_time_minutes": 20
+            }
+          },
+          {
+            "id": "few-sleep-57",
+            "componentType": "task",
+            "type": "sleep",
+            "name": "Sleep",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "sleep",
+              "ignore_pinned_tabs": true,
+              "ignore_grouped_tabs": true,
+              "ignore_tabs_playing_audio": true
+            }
+          }
+        ],
+        "Else": []
+      }
+    },
+    {
+      "id": "few-idle-59",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 3,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-bin-60",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-61",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-62",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "properties": {
+    "name": "Social timeout"
+  },
+  "sequence": [
+    {
+      "id": "few-idle-16",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 0,
+        "idle_time_minutes": 20
+      }
+    },
+    {
+      "id": "few-rule-18",
+      "componentType": "switch",
+      "type": "rule",
+      "name": "Social or video site",
+      "properties": {
+        "type": "logic",
+        "isDeletable": true,
+        "task": "rule",
+        "rules": [],
+        "conditions": [
+          {
+            "type": "domain",
+            "value": "x.com"
+          },
+          {
+            "type": "domain",
+            "value": "twitter.com"
+          },
+          {
+            "type": "domain",
+            "value": "facebook.com"
+          },
+          {
+            "type": "domain",
+            "value": "instagram.com"
+          },
+          {
+            "type": "domain",
+            "value": "reddit.com"
+          },
+          {
+            "type": "domain",
+            "value": "tiktok.com"
+          },
+          {
+            "type": "domain",
+            "value": "linkedin.com"
+          },
+          {
+            "type": "domain",
+            "value": "youtube.com"
+          }
+        ],
+        "condition_logic": "OR"
+      },
+      "branches": {
+        "If": [
+          {
+            "id": "few-sleep-17",
+            "componentType": "task",
+            "type": "sleep",
+            "name": "Sleep",
+            "properties": {
+              "type": "action",
+              "isDeletable": true,
+              "task": "sleep",
+              "ignore_pinned_tabs": true,
+              "ignore_grouped_tabs": true,
+              "ignore_tabs_playing_audio": true
+            }
+          }
+        ],
+        "Else": []
+      }
+    },
+    {
+      "id": "few-idle-19",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 3,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-bin-20",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-21",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-22",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    }
+  ]
+}

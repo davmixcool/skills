@@ -1,0 +1,108 @@
+{
+  "properties": {
+    "name": "Morning tabs"
+  },
+  "sequence": [
+    {
+      "id": "few-idle-89",
+      "componentType": "task",
+      "type": "idle",
+      "name": "Unused for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "idle",
+        "idle_time_days": 0,
+        "idle_time_hours": 3,
+        "idle_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-bin-90",
+      "componentType": "task",
+      "type": "bin",
+      "name": "Move to Bin",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "bin",
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": true,
+        "ignore_tabs_playing_audio": true,
+        "discard": true
+      }
+    },
+    {
+      "id": "few-in_bin-91",
+      "componentType": "task",
+      "type": "in_bin",
+      "name": "In Bin for",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "in_bin",
+        "bin_time_days": 5,
+        "bin_time_hours": 0,
+        "bin_time_minutes": 0
+      }
+    },
+    {
+      "id": "few-close-92",
+      "componentType": "task",
+      "type": "close",
+      "name": "Close",
+      "properties": {
+        "type": "action",
+        "isDeletable": true,
+        "task": "close",
+        "min_open_tabs": 0,
+        "ignore_pinned_tabs": true,
+        "ignore_grouped_tabs": false,
+        "ignore_tabs_playing_audio": true
+      }
+    },
+    {
+      "id": "few-schedule-93",
+      "componentType": "task",
+      "type": "schedule",
+      "name": "Schedule",
+      "properties": {
+        "type": "trigger",
+        "isLocked": false,
+        "isDeletable": true,
+        "task": "schedule",
+        "schedule_type": "weekly",
+        "time": "09:00",
+        "days_of_week": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "interval_minutes": 60,
+        "day_of_month": 1,
+        "target_timestamp": "",
+        "rules": [
+          {
+            "option": "contains",
+            "value": "mail.google.com"
+          },
+          {
+            "option": "contains",
+            "value": "calendar.google.com"
+          }
+        ],
+        "open_urls": [
+          "https://mail.google.com/",
+          "https://calendar.google.com/"
+        ],
+        "filter_pinned": false,
+        "filter_grouped": false,
+        "filter_audible": false
+      }
+    }
+  ]
+}
