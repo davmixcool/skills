@@ -16,3 +16,22 @@ the draft from the side panel.
 
 Same rules everywhere: disclose, state the price, no invented numbers, and one
 text per place.
+
+## Short video with an AI host
+
+Some makers front their short videos with an AI presenter. Ask whether they
+have one and where its character notes live, then write the host's lines in
+that voice. Whatever the notes say, these hold:
+
+- **The host is openly AI.** The post is queued with a note to turn on the
+  platform's AI-generated label (TikTok, Reels and Shorts all have one), and
+  the host never claims to be a person.
+- **The host demonstrates; it doesn't testify.** No "I use this every day",
+  no results, no personal story. A made-up person's testimonial is a fake
+  review, whoever voices it.
+- **The product footage is real.** The shot list in `notes` calls for a screen
+  recording of the real product; never a generated or mocked screen.
+- One product per video, facts from the workspace brief, price in the closer.
+
+Never draft a realistic persona presented as a real user or customer, even if
+asked: say why, and offer the openly-AI host or a faceless demo instead.
