@@ -15,7 +15,6 @@ reusable skills.
 | [`desktop-app-factory`](skills/desktop-app-factory/) | **Desktop App Factory** — evaluates, plans, builds, audits and launches focused Tauri desktop utilities: menu bar tools, global shortcuts, clipboard and filesystem helpers, background automation. Takes one recurring computer annoyance from idea score to architecture, V1 backlog and monetization plan. |
 | [`metamanager`](skills/metamanager/) | **MetaManager** — checks how a page presents itself (title, description, canonical, Open Graph, Twitter cards), scores it 0-100, returns framework-specific fixes, audits whole sites and verifies a fix by re-checking, through MetaManager's remote MCP server. |
 | [`mobile-app-factory`](skills/mobile-app-factory/) | **Mobile App Factory** — the same factory pattern for Flutter apps that own one recurring responsibility: expiry trackers, renewal and maintenance reminders, invoice follow-ups. Turns a niche into a scored idea, an architecture, a V1 and a launch plan. |
-| [`stashcue`](skills/stashcue/) | **StashCue** — plans and drafts promotion for a maker's products into their StashCue queue: checks each community's rules first, drafts posts per platform, writes briefs (not text) for replies, and spaces posts out across products. The maker reviews each draft in the StashCue extension and presses Post; the skill never posts. |
 | [`scrinly`](skills/scrinly/) | **Scrinly** — captures stored webpage screenshots, produces model-sized regions and Visual Style Guides, compares screenshots, polls asynchronous jobs, and reports credit usage through Scrinly's remote MCP server. |
 | [`withfew`](skills/withfew/) | **WithFew** — writes workflows for the WithFew Chrome extension: automatic rules for when tabs sleep, move to Bin, close, get bookmarked or send a reminder. Checks each file with WithFew's own Import validator and an engine lint, reads it back in plain words, and hands over a file to import. |
 | [`web-brand`](skills/web-brand/) | **WebBrand** — turns one SVG mark into a complete web brand kit: favicons (including a real `.ico`), app icons, PWA icons, social avatars, lockups, an X banner and an OG card, then wires the `<head>` tags, web manifest and JSON-LD into the site and verifies the result. |
@@ -31,7 +30,7 @@ Beyond that, each skill brings its own:
 | Skill | Needs |
 |---|---|
 | `desktop-app-factory`, `mobile-app-factory` | **Python 3** for the scoring and scaffolding scripts (standard library only — nothing to install) |
-| `metamanager`, `scrinly`, `stashcue` | Their **MCP server** configured in your agent. The server holds the credential; the skill never takes one as an argument. StashCue also needs its Chrome extension, signed in, to fill and post drafts |
+| `metamanager`, `scrinly` | Their **MCP server** configured in your agent. The server holds the credential; the skill never takes one as an argument |
 | `withfew` | The **WithFew** Chrome extension, to import the workflow into. **Node 18+** for the file checker (no packages to install) |
 | `web-brand` | **Node 20+** and **Chrome or Chromium**, which it rasterises through. Common macOS and Linux paths are found automatically; otherwise pass `--chrome <path>` or set `$CHROME_PATH` |
 
@@ -41,7 +40,6 @@ Beyond that, each skill brings its own:
 npx skills add davmixcool/skills --skill web-brand -g
 npx skills add davmixcool/skills --skill metamanager -g
 npx skills add davmixcool/skills --skill scrinly -g
-npx skills add davmixcool/skills --skill stashcue -g
 npx skills add davmixcool/skills --skill mobile-app-factory -g
 npx skills add davmixcool/skills --skill desktop-app-factory -g
 npx skills add davmixcool/skills --skill withfew -g
