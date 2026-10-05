@@ -1,0 +1,7 @@
+interface:
+  display_name: "ReplyScout"
+  short_description: "Read a thread and draft replies in your voice that you edit and post yourself"
+  default_prompt: "Use $replyscout to draft replies for the posts I scouted in ReplyScout."
+
+policy:
+  allow_implicit_invocation: true
