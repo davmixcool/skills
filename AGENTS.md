@@ -95,8 +95,12 @@ Skills are loaded on-demand — only the skill name and description are loaded a
 
 - Bash scripts: use `#!/bin/bash` and `set -e`
 - Node scripts: use `#!/usr/bin/env node` and `.mjs`
-- Python scripts: use `#!/usr/bin/env python3` and stick to the standard
-  library, so there is nothing for the user to install
+- Python scripts: use `#!/usr/bin/env python3` and prefer the standard library,
+  so there is nothing for the user to install. When a third-party package is
+  genuinely needed (image work, for example), name it in the skill's
+  `SKILL.md` and in the README requirements table, with a virtual-environment
+  install command. Do not tell users to `pip install --user` if the script runs
+  under `python3 -I`, which ignores user site-packages
 - Write status messages to stderr
 - Write machine-readable output (JSON) to stdout
 - Include a cleanup trap for temp files when scripts create them

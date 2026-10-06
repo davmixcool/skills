@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Cut expression tiles out of a 4x2 (or any grid) mascot sheet.
 
 Usage:

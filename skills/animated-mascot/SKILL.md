@@ -1,6 +1,6 @@
 ---
 name: "animated-mascot"
-description: "Design a brand mascot, generate a consistent pixel-art expression sheet with AI, and animate the reactions smoothly in plain JavaScript as a shareable page."
+description: "Design a brand mascot, generate a consistent pixel-art expression sheet with an AI image model, cut the tiles, and animate the reactions smoothly in plain JavaScript as a shareable page. Use when asked to create a mascot or character for a product, give a brand a face, make an expression or reaction sheet, add expressions to an approved sheet, or animate an existing character sheet. Not for redrawing a character procedurally, AI video generation, or copying another brand's mascot."
 ---
 
 # Animated mascot: from idea to moving character
@@ -8,6 +8,15 @@ description: "Design a brand mascot, generate a consistent pixel-art expression 
 Use this when someone wants a mascot or character for a product, wants expression or reaction sheets, or wants an existing character sheet animated.
 
 The workflow has six stages. Move fast through the early ones, and ask before redoing anything expensive.
+
+## Requirements
+
+- **An image-generation model** for stage 3. Without one, the person generates the sheet elsewhere and attaches it; stages 4–6 still work.
+- **Python 3 with Pillow and numpy** for the scripts in stages 4–5. Install them in a virtual environment, not with `pip install --user`: the scripts run under `python3 -I`, and `-I` ignores the user site-packages folder, so a `--user` install stays invisible and the import still fails. Inside a venv, `-I` works normally:
+  ```bash
+  python3 -m venv .venv && .venv/bin/pip install pillow numpy
+  ```
+- **A headless browser** for the one-look check in stage 6.
 
 ## 1. Ground the mascot in the brand
 
@@ -72,7 +81,7 @@ Good reaction set, each with its product moment:
 
 ## 4. Cut the tiles from the sheet
 
-Once the person attaches the approved sheet, copy it into its own working folder and run Python with `-I`.
+Once the person attaches the approved sheet, copy it into its own working folder and run the scripts with the venv's Python and `-I` (see Requirements).
 
 1. **Find the tiles.** Sample the background at (5,5). Mark pixels whose summed RGB distance from it is over 60. Take runs longer than 50px along the rows and along the columns; their intersections are the tiles.
 2. **Measure exact edges.** Left edge: the first x at mid-height whose RGB sum is under 600. Top edge: the first y in the center column where blue is more than red + 3 (this suits light, bluish hair; adjust it for other hair colors). Bottom edge: the last skin-colored pixel in the center column.
@@ -111,11 +120,12 @@ Keep the whole page self-contained (fonts from Google Fonts only), with themed t
   - export a GIF or MP4 for social
   - export a favicon and avatar set
   - have a pixel artist redraw the sheet as clean, layered art, so every part animates seamlessly
+
 ## Bundled files
 
 - `scripts/cut_tiles.py`: cuts tiles from a sheet and detects eye boxes and skin color (stage 4).
-  `python3 -I scripts/cut_tiles.py SHEET.png tiles/ calm,curious,... [--pick 0,1]`
+  `.venv/bin/python -I scripts/cut_tiles.py SHEET.png tiles/ calm,curious,... [--pick 0,1]`
   Run it once per sheet; it merges results into `tiles/meta.json` and writes a debug image to check. Add a `"_clip": [x0, y0, x1, y1]` box for the accessory glow, and optionally a `tiles/shades.png` prop sprite with a `"_shades"` box.
 - `scripts/build_page.py`: fills the page template with the tiles (stage 5).
-  `python3 -I scripts/build_page.py tiles/ reactions.html --name Boost --brand BoostGPT`
+  `.venv/bin/python -I scripts/build_page.py tiles/ reactions.html --name Boost --brand BoostGPT`
 - `templates/reactions-page.html`: the animated page. Edit its `STATES` object (names, product-moment lines, `blink`, `glow`, `fx`) to match your reactions. Reactions without a tile are skipped.

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Build the animated reactions page from cut tiles.
 
 Usage:
