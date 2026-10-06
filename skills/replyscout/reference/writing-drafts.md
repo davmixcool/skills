@@ -17,8 +17,11 @@ Order them best first. The first draft should fill the gap you found.
 
 ## Voice
 
-- Write like the maker, not like an assistant. Read their `voice` and your `learned.voiceNotes`
-  (`get_profile`): the notes from their edits beat everything else. If
+- Write like the maker, not like an assistant. Read their `voice`, your `learned.voiceNotes`
+  and `learned.examples` (`get_profile`). The notes from their edits beat everything else.
+- **The examples are their real replies.** Match their length, rhythm, case and punctuation,
+  and how they open. Never reuse their sentences or jokes: write new ones that sound like
+  them. If
   the maker has a writing-style profile (the `setup-writing-style` skill), follow it.
 - **Match the thread** on top of that. On X that often means lowercase, short,
   no sign-off, no hashtags, and no emoji unless the thread uses them.

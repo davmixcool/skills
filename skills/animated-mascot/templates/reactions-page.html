@@ -1,0 +1,297 @@
+<!-- Mascot reaction page template. Build it with scripts/build_page.py; edit STATES below to match your tiles. -->
+<title>__NAME__ Reactions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: the tile stage on the left, the reaction readout and picker on the right; stacks on phones. */
+:root {
+  --bg: #FBF8EE;
+  --ink: #15171F;
+  --muted: #5B6070;
+  --line: #E4DFD0;
+  --amber: #C77A06;
+  --chip: #FFFFFF;
+  --chip-on: #15171F;
+  --chip-on-ink: #FFFFFF;
+  --tile-shadow: 0 2px 0 rgba(21,23,31,.06), 0 20px 44px rgba(60,48,20,.18);
+  --font-display: "Silkscreen", "Courier New", monospace;
+  --font-body: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14151B; --ink: #EEF0F5; --muted: #A2A8B8; --line: #2C2F3B;
+    --amber: #F5A524; --chip: #1C1E27; --chip-on: #EEF0F5; --chip-on-ink: #14151B;
+    --tile-shadow: 0 2px 0 rgba(0,0,0,.4), 0 20px 44px rgba(0,0,0,.55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14151B; --ink: #EEF0F5; --muted: #A2A8B8; --line: #2C2F3B;
+  --amber: #F5A524; --chip: #1C1E27; --chip-on: #EEF0F5; --chip-on-ink: #14151B;
+  --tile-shadow: 0 2px 0 rgba(0,0,0,.4), 0 20px 44px rgba(0,0,0,.55);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+  padding-inline: 20px; padding-block: 40px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 48px; align-items: center; justify-content: center; }
+.stage { flex: 1 1 380px; min-width: 0; max-width: 460px; display: flex; flex-direction: column; align-items: center; gap: 26px; }
+.tile { width: min(340px, 80vw); max-width: 100%; aspect-ratio: 320 / 345; border-radius: 9.4% / 8.7%; box-shadow: var(--tile-shadow); will-change: transform; transform-origin: 50% 100%; }
+.tile canvas { width: 100%; height: 100%; display: block; border-radius: inherit; }
+.shadow { width: 60%; height: 14px; border-radius: 50%; background: var(--ink); opacity: .08; filter: blur(4px); }
+.panel { flex: 1 1 380px; min-width: 0; max-width: 480px; display: flex; flex-direction: column; gap: 24px; }
+.eyebrow { font-family: var(--font-display); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+h1 { margin: 0; font-size: clamp(30px, 4vw, 40px); font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
+.readout { display: flex; flex-direction: column; gap: 6px; padding-block: 18px; border-block: 1px solid var(--line); }
+.state-name { font-family: var(--font-display); font-size: 22px; margin: 0; }
+.state-line { margin: 0; color: var(--muted); font-size: 17px; }
+.chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.chip { min-height: 44px; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--chip); color: var(--ink); font: 500 14px var(--font-body); cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.chip:hover { border-color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on); }
+.chip:focus-visible, .play:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.play { min-height: 44px; padding: 0 18px; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--ink); font: 500 14px var(--font-body); cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.dot { width: 8px; height: 8px; border-radius: 2px; background: var(--amber); }
+.hint { color: var(--muted); font-size: 14px; margin: 0; }
+</style>
+
+<main class="wrap">
+  <section class="stage" aria-label="__NAME__">
+    <div class="tile" id="tile"><canvas id="c" width="320" height="345" role="img" aria-label="__NAME__, the __BRAND__ mascot, reacting"></canvas></div>
+    <div class="shadow" id="shadow"></div>
+  </section>
+  <section class="panel">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p class="eyebrow">__BRAND__ · mascot</p>
+      <h1>__NAME__ reactions</h1>
+    </div>
+    <div class="readout" aria-live="polite">
+      <p class="state-name" id="stateName">Calm</p>
+      <p class="state-line" id="stateLine">Nothing needs you.</p>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="controls">
+      <button class="play" id="play" type="button" aria-pressed="true"><span class="dot"></span><span id="playLabel">Pause cycle</span></button>
+      <p class="hint">Pick a reaction to hold it.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var A = __ASSETS__;
+  var W = 320, H = 345, PX = W / 30;
+  var cv = document.getElementById("c"), ctx = cv.getContext("2d");
+  var tile = document.getElementById("tile"), shadowEl = document.getElementById("shadow");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var LASH = "#3A2216";
+
+  var STATES = {
+    calm:        { name: "Calm",        line: "Nothing needs you.",                        blink: true },
+    waving:      { name: "Hello",       line: "Hi, I'm __NAME__. Let's get your site live.",  blink: false },
+    thinking:    { name: "Thinking",    line: "Looking through your visitors and pages.",  blink: true, fx: "tilt" },
+    curious:     { name: "Curious",     line: "__NAME__ noticed something.",                 blink: true, glow: true },
+    surprised:   { name: "Surprised",   line: "Traffic just spiked.",                     blink: true, fx: "pop" },
+    excited:     { name: "Excited",     line: "Found an opportunity on your site.",       blink: true },
+    focused:     { name: "Focused",     line: "Working on your launch page.",             blink: true },
+    listening:   { name: "Listening",   line: "Chatting with a visitor right now.",       blink: false, fx: "sway" },
+    concerned:   { name: "Concerned",   line: "Your pricing page contradicts your FAQ.",  blink: true },
+    unsure:      { name: "Unsure",      line: "Not enough evidence to recommend yet.",    blink: false },
+    oops:        { name: "Oops",        line: "That publish didn't go through. Retrying.", blink: true, fx: "wobble" },
+    attentive:   { name: "Attentive",   line: "Waiting on your review.",                  blink: true },
+    happy:       { name: "Happy",       line: "__NAME__ has an improvement ready.",          blink: false },
+    proud:       { name: "Proud",       line: "That change lifted your signups.",         blink: false },
+    determined:  { name: "Determined",  line: "Launch day. Let's go.",                    blink: true },
+    cool:        { name: "Cool",        line: "Published. Nice work.",                    blink: false },
+    celebrating: { name: "Celebrating", line: "You hit a milestone.",                     blink: false, fx: "confetti" },
+    sleepy:      { name: "Sleepy",      line: "Quiet night. No visitors yet.",            blink: false, fx: "doze" }
+  };
+  var ORDER = Object.keys(STATES).filter(function (k) { return A.img[k]; });
+
+  var imgs = {}, loaded = 0, total = ORDER.length + (A.img.shades ? 1 : 0);
+  function load(key, src) {
+    var im = new Image();
+    im.onload = function () { if (++loaded === total) start(); };
+    im.src = src; imgs[key] = im;
+  }
+  ORDER.forEach(function (k) { load(k, A.img[k]); });
+  if (A.img.shades) load("shades", A.img.shades);
+
+  function skinOf(k) { var s = A.meta[k].skin; return "rgb(" + s[0] + "," + s[1] + "," + s[2] + ")"; }
+  function eyeBox(k, i) { var e = A.meta[k].eyes[i]; return [e[0] - 10, e[1] - 4, e[2] + 10, e[3] + 2]; }
+  function union(a, b) { return [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]; }
+  function q(v, base) { return base + Math.round((v - base) / PX) * PX; }
+  function easeIn(t) { return t * t; }
+  function easeOut(t) { return 1 - (1 - t) * (1 - t); }
+  function backOut(t) { var c = 1.6; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); }
+  function clamp(t) { return t < 0 ? 0 : t > 1 ? 1 : t; }
+
+  // Eyelids: an upper lid comes down and a lower lid rises until they meet, with a lash line on the upper edge.
+  function drawLids(box, amt, skin) {
+    if (amt <= 0.01) return;
+    var x0 = box[0], y0 = box[1], x1 = box[2], y1 = box[3];
+    var meet = y0 + (y1 - y0) * 0.62;
+    var top = q(y0 + (meet - y0) * amt, y0);
+    var bot = q(y1 - (y1 - meet) * amt, y0);
+    if (bot < top) bot = top;
+    ctx.fillStyle = skin;
+    ctx.fillRect(x0, y0, x1 - x0, top - y0);
+    ctx.fillRect(x0, bot, x1 - x0, y1 - bot + 1);
+    if (amt > 0.97) ctx.fillRect(x0, top, x1 - x0, bot - top + 1);
+    ctx.fillStyle = LASH;
+    var lx0 = x0 + 12, lx1 = x1 - 12;
+    ctx.fillRect(lx0 + PX, top, lx1 - lx0 - 2 * PX, Math.round(PX));
+    if (amt > 0.6) {
+      ctx.fillRect(lx0, top + PX * 0.6, PX, Math.round(PX));
+      ctx.fillRect(lx1 - PX, top + PX * 0.6, PX, Math.round(PX));
+    }
+  }
+
+  function drawGlow(alpha) {
+    if (alpha <= 0.01) return;
+    var c = A.meta._clip;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (var r = 1; r <= 2; r++) {
+      ctx.globalAlpha = alpha * (r === 1 ? 0.45 : 0.2);
+      ctx.fillStyle = "#FFD86B";
+      var pad = r * PX * 0.9;
+      ctx.fillRect(c[0] - pad, c[1] - pad, c[2] - c[0] + pad * 2, c[3] - c[1] + pad * 2);
+    }
+    ctx.restore();
+  }
+
+  var current = ORDER[0], from = null, tStart = 0, dur = 0, kind = "blink";
+  var blink = { t: -1, next: 1.8 }, glowA = 0;
+  var spring = { x: 0, v: 0 }, enteredAt = 0, confetti = [];
+
+  function go(key) {
+    if (key === current && !from) return;
+    if (from) current = finalOf();
+    if (key === current) return;
+    from = current; current = key; tStart = performance.now();
+    kind = (imgs.shades && (key === "cool" || from === "cool")) ? "shades" : "blink";
+    dur = kind === "shades" ? 620 : 420;
+    if (reduce) { from = null; }
+    if (!reduce) spring.v -= (STATES[key].fx === "pop" ? 15 : 8);
+    enteredAt = performance.now();
+    nameEl.textContent = STATES[key].name; lineEl.textContent = STATES[key].line;
+    ORDER.forEach(function (k) { chipEls[k].setAttribute("aria-pressed", k === key ? "true" : "false"); });
+  }
+  function finalOf() { return current; }
+
+  function drawTile(k, alpha) {
+    if (alpha <= 0) return;
+    ctx.globalAlpha = alpha; ctx.drawImage(imgs[k], 0, 0, W, H); ctx.globalAlpha = 1;
+  }
+  function drawShades(offY) {
+    ctx.drawImage(imgs.shades, 0, offY, W, H);
+  }
+
+  function render(now, dt) {
+    ctx.clearRect(0, 0, W, H);
+    var t = from ? clamp((now - tStart) / dur) : 1;
+    if (from && t >= 1) from = null;
+
+    if (from && kind === "blink") {
+      var close = t < 0.36 ? easeIn(t / 0.36) : t < 0.6 ? 1 : 1 - easeOut((t - 0.6) / 0.4);
+      var mixA = clamp((t - 0.36) / 0.24);
+      drawTile(from, 1); drawTile(current, mixA);
+      var sk = mixA < 0.5 ? skinOf(from) : skinOf(current);
+      for (var i = 0; i < 2; i++) drawLids(union(eyeBox(from, i), eyeBox(current, i)), close, sk);
+    } else if (from && kind === "shades") {
+      var shadesH = -(A.meta._shades[3] + 10);
+      if (current === "cool") {
+        var drop = backOut(clamp(t / 0.7));
+        var swap = clamp((t - 0.62) / 0.2);
+        drawTile(from, 1); drawTile("cool", swap);
+        drawShades(shadesH * (1 - drop));
+      } else {
+        var fade = clamp(t / 0.22);
+        var lift = easeIn(clamp((t - 0.18) / 0.82));
+        drawTile("cool", 1); drawTile(current, fade);
+        drawShades(shadesH * lift);
+      }
+    } else {
+      drawTile(current, 1);
+      if (STATES[current].fx === "doze" && !reduce) {
+        var nod = 0.5 - 0.5 * Math.cos(now / 900);
+        for (var z = 0; z < 2; z++) drawLids(eyeBox(current, z), nod * 0.55, skinOf(current));
+      }
+      if (STATES[current].blink && blink.t >= 0) {
+        var u = blink.t / 0.18, amt = u < 0.5 ? easeIn(u * 2) : 1 - easeOut((u - 0.5) * 2);
+        for (var j = 0; j < 2; j++) drawLids(eyeBox(current, j), amt, skinOf(current));
+      }
+    }
+    drawConfetti(dt, (!from || t > 0.5) && STATES[current].fx === "confetti");
+    var wantGlow = (!from || t > 0.5) && STATES[current].glow ? 1 : 0;
+    glowA += (wantGlow - glowA) * (1 - Math.exp(-dt * 6));
+    drawGlow(glowA * (0.65 + 0.35 * Math.sin(now / 240)));
+  }
+
+  var CONF = ["#F5A524", "#2EA8F0", "#F06A9A", "#3BB54A"];
+  function drawConfetti(dt, on) {
+    if (reduce) return;
+    if (on && confetti.length < 18 && Math.random() < dt * 14) {
+      confetti.push({ x: Math.random() * W, y: -PX, v: 50 + Math.random() * 60, c: CONF[(Math.random() * 4) | 0], s: Math.random() < 0.5 ? 1 : 0.7, w: Math.random() * 6 });
+    }
+    for (var i = confetti.length - 1; i >= 0; i--) {
+      var p = confetti[i];
+      p.y += p.v * dt; p.w += dt * 3;
+      if (p.y > H + PX) { confetti.splice(i, 1); continue; }
+      var sz = Math.round(PX * p.s);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(Math.round(p.x + Math.sin(p.w) * 6), Math.round(p.y), sz, sz);
+    }
+  }
+
+  function updateBlink(dt) {
+    if (reduce || from || !STATES[current].blink) { blink.t = -1; return; }
+    if (blink.t >= 0) { blink.t += dt; if (blink.t > 0.18) { blink.t = -1; blink.next = 2.2 + Math.random() * 2.8; } }
+    else { blink.next -= dt; if (blink.next <= 0) blink.t = 0; }
+  }
+
+  var chipsEl = document.getElementById("chips"), nameEl = document.getElementById("stateName"), lineEl = document.getElementById("stateLine");
+  var chipEls = {};
+  ORDER.forEach(function (key) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = STATES[key].name; b.id = "chip-" + key;
+    b.setAttribute("aria-pressed", key === current ? "true" : "false");
+    b.addEventListener("click", function () { setAuto(false); go(key); });
+    chipsEl.appendChild(b); chipEls[key] = b;
+  });
+  nameEl.textContent = STATES[current].name; lineEl.textContent = STATES[current].line;
+
+  var auto = !reduce, autoT = 0, STEP = 2.4;
+  var playBtn = document.getElementById("play"), playLabel = document.getElementById("playLabel");
+  function setAuto(on) { auto = on; autoT = 0; playBtn.setAttribute("aria-pressed", on ? "true" : "false"); playLabel.textContent = on ? "Pause cycle" : "Play cycle"; }
+  setAuto(auto);
+  playBtn.addEventListener("click", function () { setAuto(!auto); });
+
+  var last = 0, clock = 0;
+  function frame(now) {
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016; last = now; clock += dt;
+    if (auto && !from) { autoT += dt; if (autoT >= STEP) { autoT = 0; go(ORDER[(ORDER.indexOf(current) + 1) % ORDER.length]); } }
+    updateBlink(dt);
+    var f = -130 * spring.x - 12 * spring.v; spring.v += f * dt; spring.x += spring.v * dt;
+    var float = reduce ? 0 : Math.sin(clock * 1.6) * 4, sq = spring.x * 0.05;
+    var fx = STATES[current].fx, rot = 0, tx = 0, since = (now - enteredAt) / 1000;
+    if (!reduce) {
+      if (fx === "tilt") rot = Math.sin(clock * 1.3) * 2.2;
+      if (fx === "sway") rot = Math.sin(clock * 2) * 1.6;
+      if (fx === "wobble") tx = Math.sin(since * 28) * Math.exp(-since * 3.5) * 7;
+      if (fx === "doze") float = float * 0.4 + 3;
+    }
+    tile.style.transform = "translate(" + tx.toFixed(2) + "px," + (float + spring.x * 6).toFixed(2) + "px) rotate(" + rot.toFixed(2) + "deg) scale(" + (1 - sq).toFixed(4) + "," + (1 + sq).toFixed(4) + ")";
+    shadowEl.style.transform = "scaleX(" + (1 - float * 0.012).toFixed(3) + ")";
+    render(now, dt);
+    requestAnimationFrame(frame);
+  }
+  function start() { render(performance.now(), 0.016); requestAnimationFrame(frame); }
+})();
+</script>

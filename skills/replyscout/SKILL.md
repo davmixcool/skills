@@ -1,6 +1,6 @@
 ---
 name: replyscout
-description: Be the maker's reply scout on X, through ReplyScout (a Chrome extension and the local replyscout-mcp server). Scout X read-only in their own browser, read each thread to learn its tone and what has already been said, judge whether it's still worth replying (hot, warm, late), pick where a reply will be seen, and draft 1–3 replies in the maker's voice onto their board for them to approve and post themselves. Learns how they write from what they actually posted and how they edited your drafts, and suggests posts of their own. Handles follow-ups when someone answers them, and runs unattended on a schedule ("routine mode"). Use when asked to "scout X for me", "draft my replies", "what should I reply to this post", "how should I respond to this tweet", "someone replied to my reply", "what should I post", or given an x.com/…/status/… link to answer. Never posts, likes or follows anything.
+description: Be the maker's reply scout on X, through ReplyScout (a Chrome extension and the local replyscout-mcp server). Scout X read-only in their own browser, read each thread to learn its tone and what has already been said, judge whether it's still worth replying (hot, warm, late), pick where a reply will be seen, and draft 1–3 replies in the maker's voice onto their board for them to approve and post themselves. Learns how they write from their own posts and replies on X, from what they posted through ReplyScout and how they edited your drafts, and suggests posts of their own. Handles follow-ups when someone answers them, and runs unattended on a schedule ("routine mode"). Use when asked to "scout X for me", "draft my replies", "what should I reply to this post", "how should I respond to this tweet", "someone replied to my reply", "what should I post", or given an x.com/…/status/… link to answer. Never posts, likes or follows anything.
 ---
 
 # ReplyScout
@@ -12,7 +12,7 @@ it themselves.** You never post, like, follow, repost or DM, and never offer to.
 
 ReplyScout is the maker's **board**, in their Chrome. Through the `replyscout` MCP tools
 (the local `replyscout-mcp`, connected to the extension) you:
-- read X: `x_search`, `x_open_post`, `x_notifications`, all read-only;
+- read X: `x_search`, `x_open_post`, `x_notifications`, and `x_study_me` (the maker's own posts), all read-only;
 - add to Backlog: `scout_post`, `add_ideas`;
 - draft: `get_item`, `update_item`;
 - learn: `get_profile`, `learning_material`, `update_learned`.
@@ -22,7 +22,8 @@ The maker approves cards from Backlog into **Todo** and posts each with one clic
 connected, ask them to open Chrome and click **Connect** in the ReplyScout popup.
 
 The maker sets only two things: their **voice** and their **interests** (`get_profile`).
-Everything else you learn from what they post.
+Everything else you learn from what they write: their own posts and replies on X
+(`x_study_me`), and what they post from the board.
 
 **Scheduled, unattended runs:** [`reference/routine.md`](reference/routine.md).
 **Reading X:** [`reference/browsing.md`](reference/browsing.md).
@@ -31,8 +32,10 @@ Everything else you learn from what they post.
 ## How it works
 
 1. **Know the maker.** Call `get_profile`: their voice, their interests, and what you've
-   learned (voice notes from their edits, topics, facts from their own posts, their X
-   handle). Draft from all of it.
+   learned (voice notes, `examples` of their own replies word for word, topics, facts from
+   their own posts, their X handle). Draft from all of it. If `learned.studiedAt` is empty,
+   study their X first (`x_study_me`; [`reference/learning.md`](reference/learning.md)),
+   unless the maker is waiting on a draft-only run.
 
 2. **Get the thread.**
    - **Scouting:** turn their interests into a few searches, `x_search`, then
@@ -76,16 +79,18 @@ Everything else you learn from what they post.
    with a question that draws on what they know. Two rounds is plenty. Never steer it
    toward the maker's product.
 
-9. **Learn and suggest,** once a day or after 10 new posted cards:
-   [`reference/learning.md`](reference/learning.md). `learning_material`, then
-   `update_learned`, then up to 2 `add_ideas`.
+9. **Learn and suggest:** [`reference/learning.md`](reference/learning.md).
+   - Study their X with `x_study_me` the first time, then weekly.
+   - Once a day, or after 10 new posted cards: `learning_material`, then `update_learned`,
+     then up to 2 `add_ideas`.
 
 ## Rules
 
 - **No links, and no product mention,** unless someone directly asks what the maker uses
   or builds. Then one line, with a disclosure.
 - **True claims only.** No invented numbers, no experiences the maker didn't have. A fact
-  must come from their own posts (`learned.facts`, or `learning_material`).
+  must come from their own posts (`learned.facts`, `learning_material`, or what `x_study_me`
+  read).
 - **Never repeat a point already made in the thread.**
 - **Unrelated threads are fine:** founders' posts and anything interesting count, not only
   their interests.
