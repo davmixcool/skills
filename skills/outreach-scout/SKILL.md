@@ -21,10 +21,13 @@ The output is two files in the person's project:
 
 - **The person sends every message.** Never send, post, DM, comment, like, follow, sign up,
   sign in or pay for them, and never offer to.
-- **Public pages only.** Read what anyone can see without logging in. If a site asks for a login,
-  stop and say so. If you're driving the person's own browser and a page has a "Sign in"
-  button, ask before clicking it: a browser that's signed into Google can create an account on
-  that site silently.
+- **Public pages, unless the person signs in.** Read what anyone can see. When something needs
+  an account (a directory's form, a search on X, an email YouTube shows only when signed in),
+  ask the person to sign in themselves in the research browser (`reference/browser.md`), then
+  carry on there. Never type a password, sign up, or sign in for them.
+- **Account actions are theirs:** submitting, publishing, paying, choosing paid options and
+  ticking consent boxes ("I own this app"). You fill in, upload and save drafts; they press
+  the button.
 - **Every line about someone's work has a source.** "I liked your video on X" must link to
   that video in the contact's `sources`, and the person checks it before sending. Never claim
   you (or they) watched or read something; describe what it is.
@@ -110,6 +113,16 @@ warns about first messages that carry a code, a key or a tracked link, and lists
 fill in. Fix the errors, consider the warnings, and build again. Then open the page for the
 person (`open outreach.html` on macOS, `xdg-open` on Linux).
 
+### Logins and forms
+
+When a step needs an account (submitting to a directory or launch site, reading X or LinkedIn
+search, a business email behind a sign-in), read `reference/browser.md`. In short: use the
+agent's own browser tool if it has one, or start the research browser
+(`node scripts/browser.mjs start <url>`); ask the person to sign in there; read the form
+(`fields`), correct what the site pre-filled, fill it (`fill values.json`), upload the images
+(`upload`), screenshot it, and check every field again after they sign in. Then hand over
+what's left for them: the consent box, paid options, the date, and submit.
+
 ### 6. Replies
 
 When someone answers, read `reference/replies.md` and draft the reply that fits: they said
@@ -141,5 +154,10 @@ Never paste the whole list into chat: it's in the page.
   their public posts and profiles, or ask the person to paste handles they know.
 - **The page shows no statuses after moving it.** Statuses live in the browser's storage for
   that file's location. Keep the file where it is, and open it in the same browser.
-- **A form or directory needs an account.** Fill in what you can without one, and hand over:
-  "sign in here, then I'll do the rest", or give them the copy to paste.
+- **A form or directory needs an account.** Start the research browser, open the form, and
+  ask the person to sign in there; then fill it (`reference/browser.md`). If there's no way to
+  drive a browser, give them the copy to paste, field by field.
+- **Fields empty again after the person signed in.** Some forms reload on sign-in. Run
+  `browser.mjs check values.json`, fill what comes back mismatched, and save the draft.
+- **`browser.mjs` says "Refused".** That button is for the person to press (submit, sign in,
+  pay). Tell them it's ready for them.

@@ -35,7 +35,7 @@ Beyond that, each skill brings its own:
 | `desktop-app-factory`, `mobile-app-factory` | **Python 3** for the scoring and scaffolding scripts (standard library only — nothing to install) |
 | `animated-mascot` | An **image-generation model** for the expression sheet. **Python 3 with Pillow and numpy** for the tile cutter — install them in a virtual environment, because the scripts run under `python3 -I`, which ignores `pip install --user` packages. A **headless browser** for the final check |
 | `metamanager`, `scrinly` | Their **MCP server** configured in your agent. The server holds the credential; the skill never takes one as an argument |
-| `outreach-scout` | **Web search** in the agent for finding people. **Node 18+** for the page builder and the YouTube channel reader (no packages to install) |
+| `outreach-scout` | **Web search** in the agent for finding people. **Node 18+** for the page builder and the YouTube channel reader; **Node 22+ and Chrome or Chromium** for the research browser that fills directory forms (`browser.mjs`). No packages to install |
 | `replyscout` | The **ReplyScout** Chrome extension and its local MCP server (`claude mcp add replyscout -s user -- npx -y replyscout-mcp`); without them, it works from pasted links and hands drafts over in chat. **Node 18+** for the pasted-link reader (no packages; uses an unofficial public mirror) |
 | `withfew` | The **WithFew** Chrome extension, to import the workflow into. **Node 18+** for the file checker (no packages to install) |
 | `web-brand` | **Node 20+** and **Chrome or Chromium**, which it rasterises through. Common macOS and Linux paths are found automatically; otherwise pass `--chrome <path>` or set `$CHROME_PATH` |
