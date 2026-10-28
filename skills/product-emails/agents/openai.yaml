@@ -1,0 +1,7 @@
+interface:
+  display_name: "Product emails"
+  short_description: "Set up a product's licence/sign-in email and lifecycle sequence in Plunk, from one markdown file"
+  default_prompt: "Use $product-emails to email Pebble's buyers their licence key with a one-click unlock, then a tips email after 2 days and a check-in after a week, through our Plunk."
+
+policy:
+  allow_implicit_invocation: true

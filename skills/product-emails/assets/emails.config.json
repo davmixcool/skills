@@ -1,0 +1,18 @@
+{
+  "provider": "plunk",
+  "apiUrl": "https://next-api.useplunk.com",
+  "secretEnv": "PLUNK_SECRET_KEY",
+  "secretsFile": ".env",
+  "templates": "emails.md",
+  "namePrefix": "Pebble",
+  "marketing": {
+    "from": "sam@updates.pebble.app",
+    "fromName": "Sam at Pebble",
+    "replyTo": "hello@pebble.app"
+  },
+  "transactional": {
+    "from": "hello@updates.pebble.app",
+    "fromName": "Pebble",
+    "replyTo": "hello@pebble.app"
+  }
+}
