@@ -1,0 +1,7 @@
+interface:
+  display_name: "WithDirector"
+  short_description: "Plan your talking-to-camera videos, then cut and revise what you recorded"
+  default_prompt: "Use $withdirector to plan a video in WithDirector about my idea."
+
+policy:
+  allow_implicit_invocation: true
