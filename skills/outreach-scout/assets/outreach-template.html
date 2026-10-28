@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outreach</title>
+<!-- Made by outreach-scout (scripts/build-tracker.mjs) from outreach.json. Statuses are saved in this browser only. -->
+<style>
+  :root {
+    --bg: #f6f6f8; --card: #ffffff; --ink: #16161d; --soft: #5d5d6b; --line: #e3e3ea;
+    --accent: #5b5bd6; --accent-soft: #ececfb; --mark: #fff3c4; --mark-ink: #6b5200;
+    --done: #e7f6ec; --done-ink: #1d6b3a; --due: #fff4e5; --due-ink: #8a4b00; --code: #f1f1f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111116; --card: #1b1b22; --ink: #ececf2; --soft: #a0a0ae; --line: #2c2c36;
+      --accent: #8b8bf0; --accent-soft: #26264a; --mark: #3d3410; --mark-ink: #f3dc8a;
+      --done: #16301f; --done-ink: #8fdcaa; --due: #33260f; --due-ink: #f1c27d; --code: #23232c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111116; --card: #1b1b22; --ink: #ececf2; --soft: #a0a0ae; --line: #2c2c36;
+    --accent: #8b8bf0; --accent-soft: #26264a; --mark: #3d3410; --mark-ink: #f3dc8a;
+    --done: #16301f; --done-ink: #8fdcaa; --due: #33260f; --due-ink: #f1c27d; --code: #23232c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 32px 16px 80px; }
+  h1 { font-size: 30px; margin: 0 0 4px; letter-spacing: -.01em; }
+  h2 { font-size: 21px; margin: 44px 0 6px; }
+  h3 { font-size: 16px; margin: 0; }
+  a { color: var(--accent); }
+  p { margin: 8px 0; }
+  .lead, .meta { color: var(--soft); }
+  .meta { font-size: 13px; }
+  nav { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0; background: var(--bg); border-bottom: 1px solid var(--line); }
+  nav a { padding: 4px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 13px; }
+  .progress { margin-left: auto; align-self: center; font-size: 13px; color: var(--soft); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 12px 0; }
+  .card.sent { border-color: color-mix(in srgb, var(--done-ink) 40%, var(--line)); }
+  .card.due { border-color: color-mix(in srgb, var(--due-ink) 50%, var(--line)); }
+  .top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .top h3 { flex: 1 1 260px; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 600; }
+  .pill.due { background: var(--due); color: var(--due-ink); }
+  select { font: inherit; font-size: 13px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+  .row { display: grid; grid-template-columns: 110px 1fr; gap: 4px 12px; margin-top: 10px; font-size: 14px; }
+  .row b { color: var(--soft); font-weight: 600; }
+  .msg { position: relative; margin-top: 12px; }
+  .msg .label { font-size: 12px; font-weight: 600; color: var(--soft); margin-bottom: 4px; }
+  .msg pre { margin: 0; padding: 12px 76px 12px 14px; border-radius: 10px; background: var(--code); white-space: pre-wrap; word-wrap: break-word; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif; }
+  .copy { position: absolute; right: 8px; top: 26px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 600 12px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; cursor: pointer; }
+  .copy.ok { background: var(--done); color: var(--done-ink); }
+  .fill { background: var(--mark); color: var(--mark-ink); border-radius: 4px; padding: 0 3px; }
+  code { background: var(--code); padding: 1px 5px; border-radius: 5px; font-size: 13px; }
+  ol.steps { padding-left: 22px; } ol.steps li { margin: 8px 0; }
+  .start li { margin: 4px 0; }
+  .empty { color: var(--soft); font-size: 14px; }
+  .theme { position: fixed; right: 16px; bottom: 16px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; font-size: 13px; }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main id="app"></main>
+<button class="theme" id="themeBtn" type="button">Light / dark</button>
+<script id="data" type="application/json">/*OUTREACH_DATA*/</script>
+<script>
+const data = JSON.parse(document.getElementById('data').textContent);
+const STATUSES = ['To send', 'Sent', 'Replied', 'Said yes', 'Not now'];
+const KEY = 'outreach:' + (data.product?.name || 'product');
+const FOLLOW_UP_DAYS = 7;
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+
+const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const fills = (s) => s.replace(/\[[A-Z][A-Z0-9 /'’-]+\]|\[name\]/g, (m) => `<span class="fill">${m}</span>`);
+// Text fields: **bold**, `code`, links, placeholders. Message bodies: placeholders only.
+const rich = (s) => fills(esc(s).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+  .replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>'));
+const plain = (s) => fills(esc(s));
+const days = (iso) => (Date.now() - new Date(iso).getTime()) / 864e5;
+const isDue = (id) => state[id]?.status === 'Sent' && state[id].at && days(state[id].at) >= FOLLOW_UP_DAYS;
+
+function block(label, text) {
+  return `<div class="msg"><div class="label">${esc(label)}</div><pre>${plain(text)}</pre>` +
+    `<button class="copy" type="button" data-text="${encodeURIComponent(text)}">Copy</button></div>`;
+}
+
+function contactCard(c) {
+  const st = state[c.id] || {};
+  const status = st.status || 'To send';
+  const when = st.at ? new Date(st.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '';
+  const cls = ['card', status !== 'To send' ? 'sent' : '', isDue(c.id) ? 'due' : ''].join(' ');
+  const sources = (c.sources || []).map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title || s.url)}</a>`).join(' · ');
+  return `<div class="${cls}" id="c-${esc(c.id)}">
+    <div class="top">
+      <h3>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.name)}</a>` : esc(c.name)}</h3>
+      ${c.channel ? `<span class="pill">${esc(c.channel)}</span>` : ''}
+      ${isDue(c.id) ? '<span class="pill due">Follow up</span>' : ''}
+      <select data-id="${esc(c.id)}">${STATUSES.map((s) => `<option${s === status ? ' selected' : ''}>${s}</option>`).join('')}</select>
+      ${when && status !== 'To send' ? `<span class="meta">${esc(status)} ${when}</span>` : ''}
+    </div>
+    <div class="row">
+      ${c.size ? `<b>Size</b><span>${esc(c.size)}${c.language ? ' · ' + esc(c.language) : ''}</span>` : ''}
+      ${c.why ? `<b>Why them</b><span>${rich(c.why)}</span>` : ''}
+      ${sources ? `<b>Based on</b><span>${sources}</span>` : ''}
+      ${c.how ? `<b>Send it</b><span>${rich(c.how)}</span>` : ''}
+      ${c.notes ? `<b>Notes</b><span>${rich(c.notes)}</span>` : ''}
+    </div>
+    ${(c.messages || []).map((m) => (m.subject ? block((m.label || 'Message') + ': subject', m.subject) : '') + block(m.label || 'Message', m.body)).join('')}
+  </div>`;
+}
+
+function render() {
+  const p = data.product || {};
+  const groups = data.groups || [];
+  const contacts = data.contacts || [];
+  const done = contacts.filter((c) => state[c.id]?.status && state[c.id].status !== 'To send').length;
+  const due = contacts.filter((c) => isDue(c.id));
+  const byId = Object.fromEntries(contacts.map((c) => [c.id, c]));
+  const start = (data.start || []).map((id) => byId[id]).filter(Boolean);
+
+  document.title = (p.name ? p.name + ' ' : '') + 'Outreach';
+  let html = `<h1>${esc(p.name || 'Product')} outreach</h1>
+    <p class="lead">Who to write to, what to send them, and what to say back.${data.made ? ' Made ' + esc(data.made) + '.' : ''} Statuses are saved in this browser only.</p>
+    <nav>
+      ${data.setup?.length ? '<a href="#start">Before you start</a>' : ''}
+      <a href="#due">Follow up (${due.length})</a>
+      ${groups.map((g) => `<a href="#g-${esc(g.id)}">${esc(g.title)}</a>`).join('')}
+      ${data.replies?.length ? '<a href="#replies">Replies</a>' : ''}
+      <span class="progress">${done} of ${contacts.length} done</span>
+    </nav>`;
+
+  if (data.setup?.length || start.length || p.line) {
+    html += `<h2 id="start">Before you start</h2><div class="card">
+      ${p.line ? `<p><b>${esc(p.name)}</b>: ${rich(p.line)}${p.site ? ` <a href="${esc(p.site)}" target="_blank" rel="noopener">${esc(p.site)}</a>` : ''}</p>` : ''}
+      ${p.demo || p.offer || p.sender ? `<div class="row">${p.demo ? `<b>Demo</b><span>${rich(p.demo)}</span>` : ''}${p.offer ? `<b>Offer</b><span>${rich(p.offer)}</span>` : ''}${p.sender ? `<b>Sender</b><span>${rich(p.sender)}</span>` : ''}</div>` : ''}
+      ${data.setup?.length ? `<ol class="steps">${data.setup.map((s) => `<li>${rich(s)}</li>`).join('')}</ol>` : ''}
+      ${start.length ? `<p><b>Start with these ${start.length}:</b></p><ol class="start">${start.map((c) => `<li><a href="#c-${esc(c.id)}">${esc(c.name)}</a>${c.why ? ': ' + rich(c.why) : ''}</li>`).join('')}</ol>` : ''}
+    </div>`;
+  }
+
+  html += `<h2 id="due">Follow up</h2><p class="meta">Sent ${FOLLOW_UP_DAYS} or more days ago with no reply marked. One follow-up each, then let it go.</p>
+    ${due.length ? due.map((c) => `<p><a href="#c-${esc(c.id)}">${esc(c.name)}</a> <span class="meta">sent ${Math.floor(days(state[c.id].at))} days ago</span></p>`).join('') : '<p class="empty">Nobody yet.</p>'}`;
+
+  for (const g of groups) {
+    const list = contacts.filter((c) => c.group === g.id);
+    html += `<h2 id="g-${esc(g.id)}">${esc(g.title)}</h2>${g.note ? `<p class="meta">${rich(g.note)}</p>` : ''}${list.map(contactCard).join('') || '<p class="empty">None.</p>'}`;
+  }
+
+  if (data.replies?.length) {
+    html += `<h2 id="replies">Replies</h2><p class="meta">What to say back. Swap in their name and keep it short.</p>
+      ${data.replies.map((r) => `<div class="card"><div class="top"><h3>${esc(r.title)}</h3></div>${block('Reply', r.body)}</div>`).join('')}`;
+  }
+  document.getElementById('app').innerHTML = html;
+}
+
+document.addEventListener('change', (e) => {
+  const id = e.target.dataset?.id; if (!id) return;
+  state[id] = e.target.value === 'To send' ? {} : { status: e.target.value, at: new Date().toISOString() };
+  save(); render();
+});
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('.copy'); if (!b) return;
+  const text = decodeURIComponent(b.dataset.text);
+  try { await navigator.clipboard.writeText(text); } catch {
+    const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); document.execCommand('copy'); t.remove();
+  }
+  b.textContent = 'Copied'; b.classList.add('ok'); setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('ok'); }, 1400);
+});
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+});
+render();
+</script>
+</body>
+</html>

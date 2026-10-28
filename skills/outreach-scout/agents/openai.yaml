@@ -1,0 +1,7 @@
+interface:
+  display_name: "Outreach Scout"
+  short_description: "Find creators, newsletters and directories for your product, and write each a personal message you send yourself"
+  default_prompt: "Use $outreach-scout to find people who should talk about my product and build my outreach page."
+
+policy:
+  allow_implicit_invocation: true

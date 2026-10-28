@@ -1,0 +1,145 @@
+{
+  "product": {
+    "name": "Ringo",
+    "site": "https://ringo.example",
+    "line": "a Mac launcher that opens in a ring around your cursor: hold a key, flick toward an app, let go.",
+    "demo": "https://youtu.be/EXAMPLE",
+    "offer": "Every download includes 14 days of Pro; anyone who replies gets a free licence.",
+    "sender": "Alex Rivera, from hello@ringo.example (sender name set to \"Alex Rivera\")"
+  },
+  "made": "28 Oct 2026",
+  "setup": [
+    "**No key in first messages.** Every download includes 14 days of Pro, so they can try everything; the messages offer a free licence if they reply.",
+    "**When someone replies, make their licence:** a 100%-off discount on Ringo Pro, usable once, named after them (e.g. `MAYA`). Send it with the \"They said yes\" reply.",
+    "**Pace:** 3–5 a day, each by hand. Check the first line of each message against its source before sending.",
+    "**One follow-up** after 7 days with no answer, then let it go."
+  ],
+  "groups": [
+    { "id": "best", "title": "Best fit", "note": "Made something in the category in the last year, and a reachable size." },
+    { "id": "lang", "title": "Other languages" },
+    { "id": "long", "title": "Long shots", "note": "Big audiences: one message, so it carries a code." },
+    { "id": "directories", "title": "Directories and launch sites" },
+    { "id": "press", "title": "Newsletters and press" }
+  ],
+  "start": ["maya", "leo", "mac-directory"],
+  "contacts": [
+    {
+      "id": "maya",
+      "group": "best",
+      "name": "Maya Chen",
+      "url": "https://www.youtube.com/@example-maya",
+      "size": "42K subscribers · Canada",
+      "language": "English",
+      "why": "Her video \"9 Mac Apps I Use Every Day\" (Sep 2026) features two launchers and a window switcher.",
+      "how": "Email **maya@example.com** (business email on her YouTube About page). Backup: Instagram DM @example.maya.",
+      "channel": "Email",
+      "sources": [{ "title": "9 Mac Apps I Use Every Day", "url": "https://www.youtube.com/watch?v=EXAMPLE1" }],
+      "messages": [
+        {
+          "label": "Email",
+          "subject": "A Mac app for your next round-up, if it earns a place",
+          "body": "Hi Maya,\n\nI saw your \"9 Mac Apps I Use Every Day\" video, and liked that you showed each one in use rather than reading out a list. I make a small Mac app called Ringo, and I think it might fit a future round-up.\n\nIt opens your apps in a ring around the cursor: hold a key, flick toward an app, let go. No aiming at a Dock icon at the bottom of the screen.\n\n90-second demo: https://youtu.be/EXAMPLE\n\nIt comes with 14 days of Pro, so you can try everything. If you'd like to keep it, just reply and I'll send you a free licence.\nNo strings: if it's not for you, no need to reply.\n\nThanks,\nAlex\nringo.example"
+        },
+        {
+          "label": "Backup: Instagram DM (if the email gets no answer in a week)",
+          "body": "Hi Maya, saw your \"9 Mac Apps I Use Every Day\" video. I make Ringo, a Mac launcher that opens in a ring around your cursor. 90-sec demo: https://youtu.be/EXAMPLE\n\nI emailed you too. It comes with 14 days of Pro, and I'll send a free licence if you'd like to keep it."
+        }
+      ]
+    },
+    {
+      "id": "leo",
+      "group": "best",
+      "name": "@example_leo",
+      "url": "https://x.com/example_leo",
+      "size": "X",
+      "why": "Posts \"Mac apps worth installing\" lists most weeks.",
+      "how": "X DM.",
+      "channel": "DM",
+      "sources": [{ "title": "Mac apps worth installing (latest list)", "url": "https://x.com/example_leo/status/EXAMPLE" }],
+      "messages": [
+        {
+          "label": "X DM",
+          "body": "Hi Leo, I like your \"Mac apps worth installing\" lists. I make Ringo: a launcher that opens in a ring around your cursor (hold a key, flick to an app). 90-sec demo: https://youtu.be/EXAMPLE\n\nIt comes with 14 days of Pro, and if you'd like to keep it, I'll send you a free licence. No strings."
+        }
+      ]
+    },
+    {
+      "id": "lucia",
+      "group": "lang",
+      "name": "Lucía Ortega (Spanish)",
+      "url": "https://www.youtube.com/@example-lucia",
+      "size": "6K subscribers · Spain",
+      "language": "Spanish",
+      "why": "Compared five Mac launchers side by side (Jul 2026).",
+      "how": "Email via the contact page on her site.",
+      "channel": "Email (Spanish)",
+      "sources": [{ "title": "5 alternativas a Spotlight", "url": "https://www.youtube.com/watch?v=EXAMPLE2" }],
+      "messages": [
+        {
+          "label": "Email",
+          "subject": "Otro lanzador para Mac, por si encaja",
+          "body": "¡Hola, Lucía!\n\nVi tu vídeo comparando cinco alternativas a Spotlight, muy útil. Hago Ringo, un lanzador para Mac con una idea distinta: tus apps en un anillo alrededor del cursor. Mantienes una tecla, mueves hacia una app y sueltas.\n\nDemo de 90 segundos: https://youtu.be/EXAMPLE\n\nViene con 14 días de Pro para probarlo todo; si quieres quedártelo, respóndeme y te mando una licencia gratis. Sin compromiso.\n\nGracias,\nAlex\nringo.example"
+        }
+      ]
+    },
+    {
+      "id": "big",
+      "group": "long",
+      "name": "Example Tech (long shot)",
+      "url": "https://www.youtube.com/@example-tech",
+      "size": "450K subscribers · US",
+      "why": "\"12 Mac Apps for 2026\" (Jan 2026).",
+      "how": "Business email on the channel's About page (sign in to YouTube to see it).",
+      "channel": "Email",
+      "sources": [{ "title": "12 Mac Apps for 2026", "url": "https://www.youtube.com/watch?v=EXAMPLE3" }],
+      "messages": [
+        {
+          "label": "Email",
+          "subject": "A launcher for a future Mac apps video",
+          "body": "Hi,\n\nI make Ringo, a Mac launcher that opens in a ring around your cursor: hold a key, flick toward an app, let go. Thought it could earn a spot in a future Mac apps video.\n\n90-second demo: https://youtu.be/EXAMPLE\n\nHere's a free Pro licence: [FREE LICENCE CODE]\nNo strings.\n\nThanks,\nAlex\nringo.example"
+        }
+      ]
+    },
+    {
+      "id": "mac-directory",
+      "group": "directories",
+      "name": "Example Mac Directory",
+      "url": "https://example-directory.example/submit",
+      "size": "Directory",
+      "why": "Lists native Mac apps, with a weekly launch.",
+      "how": "Submit the form (needs an account: sign in yourself, then paste these).",
+      "channel": "Form",
+      "sources": [{ "title": "Submission guidelines", "url": "https://example-directory.example/guidelines" }],
+      "messages": [
+        { "label": "Tagline", "body": "Your apps in a ring around your cursor: hold a key, flick, let go." },
+        { "label": "Description", "body": "Ringo opens your apps in a ring around the pointer, wherever it is. Hold a key (or the middle mouse button), flick toward the one you want and let go: only the direction counts.\n\nNative Swift, about 20 MB, no account. Free to download with 14 days of Pro; Pro is a one-time purchase." }
+      ]
+    },
+    {
+      "id": "newsletter",
+      "group": "press",
+      "name": "Example Indie Apps Weekly",
+      "url": "https://newsletter.example",
+      "size": "Weekly newsletter",
+      "why": "Features one indie Mac app each issue.",
+      "how": "Email tips@newsletter.example with two screenshots attached.",
+      "channel": "Email",
+      "sources": [{ "title": "Latest issue", "url": "https://newsletter.example/latest" }],
+      "messages": [
+        {
+          "label": "Email",
+          "subject": "Indie: Ringo, a Mac launcher in a ring around your cursor",
+          "body": "Hi,\n\nA suggestion for the newsletter: Ringo, a Mac launcher I build on my own.\n\n• Your apps in a ring around the cursor: hold a key, flick, let go\n• Only the direction counts, so no aiming at icons\n• Native, about 20 MB, no account\n• macOS 14+, Apple silicon and Intel\n• Free with 14 days of Pro; Pro is a one-time purchase\n\nSite: https://ringo.example\nDemo (90 s): https://youtu.be/EXAMPLE\nScreenshots attached. Happy to answer anything or send a licence.\n\nThanks,\nAlex Rivera"
+        }
+      ]
+    }
+  ],
+  "replies": [
+    { "id": "yes", "title": "They said yes, or asked for the licence", "body": "Thanks [name]! Here's your free licence: go to ringo.example/buy and enter the code [THEIR CODE] at checkout. It comes to $0, and your key arrives by email.\n\nHold the shortcut anywhere to open the ring. Anything odd or missing, tell me and I'll fix it.\n\nIf you do end up linking it anywhere, this link lets me see it was you: ringo.example/?utm_source=[THEIR NAME]" },
+    { "id": "giveaway", "title": "They asked about a giveaway", "body": "Happy to! I can give you 3 licences for your audience. Tell me how you'd like them and when it goes out, so I'm around to answer questions." },
+    { "id": "paid", "title": "They asked for payment", "body": "Thanks for the details. I'm one person building Ringo and don't have a budget for paid placements right now, so I'll have to pass. The free licence is yours either way." },
+    { "id": "mention", "title": "They mentioned it", "body": "Thank you, [name]! Really appreciate you taking the time. I'll share it, and I'm answering any questions in the comments." },
+    { "id": "no", "title": "They said it's not for them", "body": "No worries at all, thanks for taking a look. Keep the licence if you like." },
+    { "id": "follow", "title": "One follow-up after 7 days", "body": "Hi [name], just making sure this didn't get buried. No pressure at all; the offer stands if you ever want to try Ringo. https://youtu.be/EXAMPLE" }
+  ]
+}
