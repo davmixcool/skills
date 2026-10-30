@@ -1,0 +1,17 @@
+{
+  "name": "product-film",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "export:dark": "node tools/export.mjs --theme dark",
+    "export:light": "node tools/export.mjs --theme light",
+    "stills": "node tools/stills.mjs"
+  },
+  "dependencies": {
+    "three": "0.170.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

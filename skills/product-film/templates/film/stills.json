@@ -1,0 +1,29 @@
+{
+  "brand": {
+    "name": "Product",
+    "mark": "<svg viewBox=\"0 0 64 64\" aria-hidden=\"true\"><rect x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"14\" fill=\"currentColor\"/></svg>"
+  },
+  "themes": ["light", "dark"],
+  "frames": {
+    "open": { "t": 3.2 },
+    "product": { "t": 10.2 },
+    "end": { "t": 14.5 }
+  },
+  "sets": {
+    "store": {
+      "dir": "stills/store",
+      "images": [
+        { "file": "screenshot-1.jpg", "w": 1280, "h": 800, "frame": "product", "x": 0, "layout": "side", "title": "Your product,<br>doing its one thing.", "line": "Say what it does,<br>in the words it uses." },
+        { "file": "promo-small-440x280.jpg", "w": 440, "h": 280, "frame": "open", "x": 0.4, "layout": "brand" },
+        { "file": "promo-marquee-1400x560.jpg", "w": 1400, "h": 560, "frame": "open", "x": 0.4, "layout": "brand", "line": "The tagline." }
+      ]
+    },
+    "posters": {
+      "dir": "stills/posters",
+      "images": [
+        { "file": "poster-a.jpg", "w": 1920, "h": 1080, "frame": "product", "fit": "contain", "zoom": 0.8, "y": 0.85, "layout": "hero", "line": "The tagline.", "foot": "A minute with Product." },
+        { "file": "poster-b.jpg", "w": 1920, "h": 1080, "frame": "product", "x": 0.5, "layout": "poster", "title": "The tagline.", "line": "See what it does, in about a minute." }
+      ]
+    }
+  }
+}

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Product film</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&display=block" rel="stylesheet" />
+    <script type="importmap">
+      { "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }
+    </script>
+    <style>
+      html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+      body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; color: #f4f5f7; --ink-top: #ffffff; --ink-bottom: #b9bcc6; --md: #c9ccd3; --wash: 4,5,10; }
+      body.light { color: #16181d; --ink-top: #16181d; --ink-bottom: #4a4f59; --md: #4a4f59; --wash: 250,250,252; }
+      #wrap { position: absolute; inset: 0 0 40px 0; }
+      #stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; background: #05060a; transform-origin: 50% 50%; transform: translate(-50%, -50%); }
+      body.light #stage { background: #f4f4f6; }
+      #gl { position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; }
+      #scrim { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: linear-gradient(90deg, rgba(var(--wash),.82) 0%, rgba(var(--wash),.55) 30%, rgba(var(--wash),0) 52%); }
+      #words { position: absolute; inset: 0; pointer-events: none; }
+      .w { position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap; will-change: transform, opacity, filter; }
+      .w.left { text-align: left; left: 140px; right: auto; }
+      .xl { font-size: 112px; font-weight: 600; letter-spacing: -0.045em; line-height: 1; }
+      .lg { font-size: 80px; font-weight: 600; letter-spacing: -0.04em; line-height: 1.05; }
+      .md { font-size: 44px; font-weight: 500; letter-spacing: -0.025em; line-height: 1.22; color: var(--md); }
+      /* A gradient fills the text's box: give descenders (g, y, p) room below, and take it back so nothing moves. */
+      .grad { background: linear-gradient(180deg, var(--ink-top) 30%, var(--ink-bottom) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.18em; margin-bottom: -0.18em; }
+      .brand { display: inline-flex; align-items: center; gap: 22px; }
+      body.export #wrap { inset: 0; }
+      body.export #stage { left: 0; top: 0; transform: none !important; }
+      body.export #bar { display: none; }
+      #bar { position: fixed; left: 16px; right: 16px; bottom: 12px; display: flex; gap: 12px; align-items: center; color: #aaa; font: 13px/1 Inter, sans-serif; }
+      #bar input { flex: 1; }
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="stage">
+        <canvas id="gl" width="1920" height="1080"></canvas>
+        <div id="scrim"></div>
+        <div id="words"></div>
+      </div>
+    </div>
+    <div id="bar"><button id="play">Play</button><input id="scrub" type="range" min="0" max="20" step="0.01" value="0" /><span id="time">0.00</span></div>
+    <script type="module" src="./src/film.js"></script>
+  </body>
+</html>
