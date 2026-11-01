@@ -5,8 +5,12 @@ already wired into `templates/film/src/film.js`; this is what to keep, and why, 
 
 ## The frame
 
-- **16:9, 1920×1080, 30 fps.** One WebGL canvas, `renderer.setPixelRatio(1)`: the export
-  screenshots exactly 1920×1080, and a higher ratio only costs time.
+- **16:9, 1920×1080, 30 fps by default; any frame with `?size=`.** One WebGL canvas,
+  `renderer.setPixelRatio(1)`: the export screenshots exactly the frame, and a higher ratio only
+  costs time. Every frame keeps the height (1080), so type keeps its size and a wider frame shows
+  more at the sides. Social posts: lay out in the square (1080×1080) first, then check 11:9
+  (1320×1080), 1.43:1 (1548×1080) and 16:9. Vertical is the square on a card
+  (made outside the film).
 - **Every frame is a pure function of `t`.** `renderFrame(t)` sets every position, opacity and
   repaint from `t` alone. No `requestAnimationFrame` state, no `Date.now()`, no `Math.random()`
   (use `seeded()`), no tweens that carry state between frames. That is what makes the export
@@ -16,11 +20,19 @@ already wired into `templates/film/src/film.js`; this is what to keep, and why, 
 
 ## Depth
 
-- **Glass slabs** (`slab()`): the product's drawn UI on the face of a rounded box with a clear
-  coat, and a faded reflection on an invisible floor. The product always sits on one.
+- **Glass slabs** (`slab()`): the product's drawn UI on the face of a rounded glass body with a
+  clear coat, and a faded reflection on an invisible floor. The product always sits on one.
+  - Give `slab()` the face's own corner radius (the drawing's radius × the slab's width ÷ the
+    drawing's width). The body is an extruded rounded rectangle for this reason: a rounded box
+    can only be as round as it is thin, and its square-ish corners poked out behind a window
+    with rounder ones.
+  - For a white window, colour the body the window's own light grey (`body`), so its edge reads
+    as the window's thickness. A dark body showed as a rim, and as a dark strip along the top
+    edge when seen from just above.
 - **Depth of field** (`BokehPass`): focus on what the voice is talking about
   (`focus = depthOf(thing.position)`), aperture 0.0005–0.0012. Background things blur; that is
-  most of the 3D feel.
+  most of the 3D feel. While one big white panel fills the shot, turn the pass off
+  (`bokeh.enabled = false`): it drew a dark strip along the panel's top edge.
 - **Dust** (`dust()`): a few hundred specks of soft light drifting in depth in each shot.
   Additive in dark, normal blending and grey in light.
 - **Grounds**: a soft radial gradient per mood (`GROUNDS.night`, `violet`, `dawn`). Change the
@@ -29,7 +41,8 @@ already wired into `templates/film/src/film.js`; this is what to keep, and why, 
 
 ## Finish
 
-A vignette, the faintest colour fringe at the edges, and a dither of ±0.5/255 against banding.
+A vignette and a dither of ±0.5/255 against banding. No colour fringe (chromatic aberration):
+near the frame's sides it split white windows' edges into a red and blue rim.
 
 **No grain, no noise, no scanlines.** Grain reads as TV static on a phone, and x264 spends its
 bits encoding it: one film went from ~30 MB to 944 MB with grain at CRF. The dither is invisible
@@ -61,13 +74,25 @@ and costs nothing.
 - Words beside the product sit left over a soft wash (`#scrim`), with the product to the right;
   check no word overlaps the slab at its closest point in the shot.
 - No glows, coloured blobs or gradients behind text or cards: they look cheap. Light the object
-  itself instead (a badge that lights up, a halo behind a slab).
+  itself instead (a badge that lights up). No halo behind the product either, unless asked: the
+  template has none.
+- In a square frame the words sit above the product: keep that band clear. Move background
+  things (drifting cards, dust clusters) out of it, rather than checking frame by frame.
+- The product's own words and shortcuts can be type too: keycaps (`⌥ D`) under a closing line.
 
 ## Light and dark
 
 Both, always, from one film: `?theme=light` swaps the grounds, the slab material, the bloom and
 vignette strength, the dust blending, the DOM colours (`body.light`) and the drawings' palette.
 Check both at the same moments before exporting either.
+
+## Drawn UI
+
+- Shadows on drawn cards and notifications: faint and tight (about 14% black, a short blur, a
+  small drop), as macOS draws them. A heavy, spread shadow read as fake. Stack them close, as
+  real notifications stack.
+- Repaint a canvas only when its state changes: key it on the state (`count:hover:sent`), and
+  quantise animated values (to 1/20).
 
 ## Shots that work
 
@@ -81,3 +106,9 @@ Check both at the same moments before exporting either.
 - **Payoff**: everything at once, wide.
 - **End**: the wordmark and the tagline. Nothing after it: no call to action, no URL, no
   "available now", no price, unless the person asks for one.
+- **End without a name** (an idea not out yet): a line that answers the opening one ("Your
+  downloads, everywhere." → "Every file, one shortcut away."), over the product's central
+  moment, with the shortcut as keycaps. A question tacked on ("Would you use this?") read as
+  tacked on. Land it on the track's last bar line and let the music ring out under it.
+- **Loop** (a social clip): the last shot eases the camera and objects onto the opening shot's
+  path, run just before 0 (`t − DURATION`), so the last frame meets the first.

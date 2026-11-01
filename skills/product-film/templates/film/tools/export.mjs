@@ -3,9 +3,12 @@
  * Renders the film to an MP4: every frame from window.renderFrame(t), screenshotted in Chrome on
  * the GPU and piped to ffmpeg, with the soundtrack muxed in.
  *
- *   node tools/export.mjs [--theme dark|light] [--fps 30] [--out renders/film-dark.mp4]
+ *   node tools/export.mjs [--theme dark|light] [--size 1920x1080] [--query a=1&b=2] [--fps 30] [--out renders/…]
  *                         [--audio assets/soundtrack.m4a] [--poster 6.4] [--crf 20]
  *   node tools/export.mjs --theme light --stills 4,12.5,27 [--clean]     single PNG frames to frames/
+ *
+ * --size renders the film at another frame (the page reads ?size=); --query passes the page any
+ * other flags (an ending, a variant), and is part of the file names.
  *
  * Audio: --audio, else assets/soundtrack.m4a if it exists, else the page's code score
  * (window.scoreWav, src/score.js), loudness-evened to -15 LUFS.
@@ -17,11 +20,13 @@ import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { serve } from './serve.mjs';
-import { launch, openFilm, CLIP, arg, flag } from './browser.mjs';
+import { launch, openFilm, CLIP, SIZE, arg, flag } from './browser.mjs';
 
 const fps = Number(arg('fps', 30));
 const theme = arg('theme', 'dark');
-const out = resolve(arg('out', `renders/film-${theme}.mp4`));
+const extra = arg('query', '');
+const tag = `${theme}-${SIZE}${extra ? `-${extra.replace(/[^a-z0-9]+/gi, '-')}` : ''}`;
+const out = resolve(arg('out', `renders/film-${tag}.mp4`));
 const crf = arg('crf', '20');
 const posterAt = arg('poster', null);
 const stills = arg('stills', null);
@@ -29,13 +34,13 @@ const stills = arg('stills', null);
 const server = await serve(0);
 const browser = await launch();
 try {
-  const query = `export&theme=${theme}${flag('clean') ? '&clean' : ''}`;
+  const query = `export&theme=${theme}&size=${SIZE}${flag('clean') ? '&clean' : ''}${extra ? `&${extra}` : ''}`;
   const tab = await openFilm(browser, `http://127.0.0.1:${server.address().port}/index.html?${query}`);
   if (stills) {
     mkdirSync('frames', { recursive: true });
     for (const t of stills.split(',').map(Number)) {
       await tab.evaluate((t) => window.renderFrame(t), t);
-      const file = `frames/${theme}${flag('clean') ? '-clean' : ''}-t${t.toFixed(2)}.png`;
+      const file = `frames/${tag}${flag('clean') ? '-clean' : ''}-t${t.toFixed(2)}.png`;
       await tab.screenshot({ path: file, clip: CLIP });
       console.log(file);
     }

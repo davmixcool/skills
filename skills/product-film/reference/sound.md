@@ -12,25 +12,51 @@ download music on your own.
    candidates, the likely drops (the biggest rises in loudness, snapped to an onset), and the
    loudness every 2 s.
 2. **Confirm the tempo.** The analysis gives candidates, best first. Expect the true tempo in
-   the top two, next to a triplet or half-time reading: one 140 BPM track came out "92, 139".
-   Take the tempo from the track's page if it lists one, or confirm by ear. Never cut bars on
-   a guessed tempo.
+   the top two, next to a triplet or half-time reading: one 139 BPM track came out "92, 139".
+   Take the tempo from the track's page if it lists one. Otherwise measure it from the track's
+   structure: `--landmarks a,b` (two clear moments, such as the drop and the re-entry after a
+   break) counts the beats between them at each candidate, and the true tempo gives a whole
+   number. Tempos 3:2 apart can both pass one pair (162 beats at 139 is 108 at 92.7), so check a
+   second pair, and the chord cycle at each: the true tempo has a clean 8, 16 or 32. Then take
+   the exact tempo from the whole count, and the beat grid from `--analyse --bpm`. Never cut bars
+   on a guessed tempo.
 3. **Put the drop on the big cut.** The drop is the track's biggest moment; the film's is the
    cut from the problem to the product. `--drop <track s> --drop-at <film s>` lines them up.
    This decides where the track starts (`drop - drop-at`). If the drop is too early in the
    track for the cut, the film's opening is shorter than the cut, so move the cut.
 4. **Join to the track's own ending.** A track is rarely as long as the film. Play it from its
-   start point, then at a bar line before the end card (`--splice-bar N`, N bars after the
-   drop; needs `--bpm`), cross to the track's own ending so the music resolves under the
-   wordmark.
-5. **Let the audio pick the join.** With `--ending auto` (the default), the 4 s of onsets
-   before the join are matched against every moment of the track's last 40%, and the best
-   Pearson r wins. Expect r around 0.3–0.8; a candidate 4 or 8 bars from the best is the
-   same phrase. Counting bars at a nominal tempo once landed 3 beats off, which you could
-   hear as a jump. Matching the audio found the hand-checked join to 0.01 s.
-6. **Listen across the join** in the preview (`?t=` a few seconds before it).
+   start point, then at a bar line (`--splice-bar N`, N bars after the drop; needs `--bpm`),
+   cross to music that plays out to the track's own end (`--to-end`), so the film ends with the
+   music rather than on a fade. Set `--duration` to the join plus what's left of the track, and
+   put the last shot on the track's last bar line.
+5. **Join on whole chord cycles, matched on chords and rhythm.** A track's chords go round in a
+   cycle (often 8 or 16 beats; `--analyse --bpm` measures it). A join that skips part of a
+   cycle lands mid-progression: the beat holds and the chords jump. With `--bpm`, `--ending
+   auto` tries only whole cycles on from the join, scores each on harmony (12-note chroma) and
+   rhythm (onsets), 6 s before and 6 s after, and prints the top five. A clean join scores
+   about 0.85+ on harmony; rhythm 0.3–0.8. It blends over 2 beats (`--xfade`). Two joins that
+   jumped: one picked by hand, mid-phrase, straight into a track's outro; one that skipped
+   7 bars of a 2-bar progression, which matched the rhythm but not the chords. Counting bars at
+   a nominal tempo also once landed 3 beats off. Let the tool choose, from the measured grid.
+6. **Listen across the join** in the preview (`?t=` a few seconds before it). If you can't
+   listen, say so, and ask the person to listen there.
 
-`music.mjs` writes `assets/music.m4a`, loudness-evened to -15 LUFS with one static gain.
+## A film that loops
+
+A social clip plays round and round, so a loop must be seamless in sound as well as picture.
+
+- **Length: a whole number of chord cycles** (12 bars at a 4-bar cycle, say). The music's end
+  is crossfaded into the music just before its start, so the two halves of the crossfade must
+  be on the same chord.
+- **Start it a bar or two before the drop,** so the drop lands on the film's big cut and the
+  wrap falls back into the quieter bars before it, as the track itself does.
+- `node tools/loopmusic.mjs --track <file> --start <track s at film 0> --duration <film s>`
+  (a 1.2 s equal-power crossfade, -16 LUFS).
+- Check the wrap: the first and last frames of the export should match, and the level across
+  the wrap should be what the track does there.
+
+`music.mjs` writes `assets/music.m4a`, loudness-evened to -15 LUFS with one static gain
+(`--lufs -16` for a social post, the platforms' usual level).
 
 ## A score in code
 

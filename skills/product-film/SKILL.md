@@ -1,6 +1,6 @@
 ---
 name: product-film
-description: "Make a premium product film in code: a three.js scene of the product's own UI, drawn on glass slabs with depth of field, sharp words over it, music cut to the picture (drop on the big cut, joined to the track's ending by matching the audio) or a score made in code, an optional voiceover timed from its pauses, light and dark, exported frame by frame to MP4. Then the store images, posters and social cards from the same frames. Use when asked to make a launch video, product video, promo or demo film, a landing-page video, a 3D or three.js video of an app, a short seasonal or social clip in a product's look, video posters, or store screenshots that match a video. Not for editing camera footage, talking heads, captions, or AI-generated video."
+description: "Make a premium product film in code: a three.js scene of the product's own UI, drawn on glass slabs with depth of field, sharp words over it, music cut to the picture (drop on the big cut, joined to the track's ending where the chords and rhythm match) or a score made in code, an optional voiceover timed from its pauses, light and dark, in any frame (16:9, or square first for social, plus 11:9, 1.43:1 and vertical), as a film that ends or one that loops, exported frame by frame to MP4. Then the store images, posters and social cards from the same frames. Use when asked to make a launch video, product video, promo or demo film, a landing-page video, a 3D or three.js video of an app, a short seasonal or social clip in a product's look, video posters, or store screenshots that match a video. Not for editing camera footage, talking heads, captions, or AI-generated video."
 ---
 
 # Product film
@@ -35,19 +35,22 @@ The result looks like a premium launch film, not a screen recording. Because eve
 
 Read the product before asking anything: its README, landing page, store listing, and the UI components the film will show. Then ask only what you can't find:
 
-- **Where it goes.** A landing page (~60 s, narrated), a launch post (20–40 s), a store promo, or a seasonal or social clip (15–20 s, music only). This sets the length and whether there's a voice.
+- **Where it goes.** A landing page (~60 s, narrated), a launch post (20–40 s), a store promo, or a seasonal or social clip (15–30 s, music only). This sets the length and whether there's a voice.
+- **Which frames.** A site wants 16:9. A social post wants the square first (1080 × 1080), then vertical (made from the square) and often 11:9 (1320 × 1080), 1.43:1 (1548 × 1080) and 16:9 to pick from. Render every one asked for: don't drop a size without asking.
+- **How it ends.** On the wordmark, or, for a social clip, as a loop (its last frame flows back into its first) or on a closing line. When the product can't be named yet (an unreleased idea), end on a line that answers the opening one, plus the shortcut or gesture to remember; a question tacked on at the end ("Would you use this?") reads as tacked on.
 - **What it shows.** Which features, and in which environments (browsers, OSes, devices). Get a reference screenshot of each real environment to draw from.
 - **Music.** A track the person provides or names. Never download one on your own. With no track, use a code score.
 - **Voice.** Whether there is one, and which (see [reference/voice.md](reference/voice.md)).
 
 Defaults, unless the person says otherwise:
 
-- **Both light and dark versions.**
+- **Both light and dark versions,** both rendered before you report back.
 - **No call to action in the film.** Don't add "Add to Chrome", a price, a URL or "free for 7 days". It ends on the wordmark and tagline.
 - **No mascot or character unless asked.** No people, rooms, desks or monitors; the product floats in its own space.
 - **Drawn UI, never screenshots, inside the film.**
 - **A steady, low music bed under a voice. Never ducking.**
 - **No film grain or noise.**
+- **No glowing halos behind the product or the words.** Light the object itself.
 - **Every claim is true.** Show only what the product does, the way it does it.
 
 ## 2. Shot list
@@ -89,7 +92,7 @@ The template is a working 16 s film: three shots (open, product, end), a code sc
 | `src/film.js` | The scene, post-processing, shots, words, `renderFrame(t)`, and the preview player |
 | `src/score.js` | The code score (Web Audio, offline). Delete it when using a track |
 | `index.html` | The stage, the type styles, and the light theme's colours |
-| `tools/` | `serve`, `export`, `music`, `voice`, `mix`, `contact-sheet`, `web` and `stills`. Each has its usage in its header |
+| `tools/` | `serve`, `export`, `music`, `loopmusic`, `voice`, `mix`, `contact-sheet`, `web` and `stills`. Each has its usage in its header |
 | `stills.json` | The store images and posters to make from the film |
 
 ## 4. Draw the product
@@ -110,11 +113,13 @@ In `film.js`, each shot is a `THREE.Group`, visible in its time range. Inside `r
 - its camera (always moving);
 - `focus = depthOf(subject)` and an aperture.
 
-Moments come from `timeline.js`, never from numbers written in the shot.
+Moments come from `timeline.js`, never from numbers written in the shot. With music, time them in beats and bars (`BEAT`, `bar(n)`), not seconds, inside shots too: then a new track re-times everything.
 
 - Use `slab(canvas, w, h)` for anything that is product UI, and `dust()` in every shot.
 - Swing between similar slabs on an arc rather than cutting. Cut on the music's beats or the voice's lines.
 - When a shot needs a still-only state for the store images, add a URL flag (e.g. `?still=x`).
+- **Several frames:** the film reads `?size=WxH`. Every size keeps the height, so a wider frame shows more at the sides. For social, lay each shot out in the square first, then check the widest.
+- **A loop:** write the opening shot as a function of time that also runs just before 0, and ease the last shot's camera and objects onto it (at `t − DURATION`), so the last frame meets the first. Check it: the first and last frames should match.
 
 ## 6. Words
 
@@ -123,15 +128,20 @@ Moments come from `timeline.js`, never from numbers written in the shot.
 - Use few words, big, with one idea at a time. Use the product's own words.
 - Time each line to its word in the voice, or to the beat when there's no voice.
 - Words beside a slab sit left over the scrim. Check they never overlap the slab at its closest point.
+- In a square frame the words sit above the product. Keep that band clear: move background objects out of it rather than hoping they miss.
 
 ## 7. Sound
 
 Read [reference/sound.md](reference/sound.md), and [reference/voice.md](reference/voice.md) for a narrated film.
 
 ```bash
-# a track: find the drop and tempo, then fit it (drop on the big cut, joined to its own ending)
+# a track: find the drop and tempo; confirm the tempo from two landmarks; get the beat grid and chord cycle
 node tools/music.mjs --analyse --track <track.mp3>
-node tools/music.mjs --track <track.mp3> --drop 15.02 --drop-at 4 --duration 16 --bpm 140 --splice-bar 4
+node tools/music.mjs --analyse --track <track.mp3> --landmarks 14.99,84.92 --bpm 139
+# fit it: drop on the big cut, joined (whole chord cycles on) to music that plays out to its own end
+node tools/music.mjs --track <track.mp3> --drop 15.02 --drop-at 4 --duration 28 --bpm 140 --splice-bar 6 --to-end
+# a film that loops: a whole number of chord cycles, crossfaded back into its own start
+node tools/loopmusic.mjs --track <track.mp3> --start 11.54 --duration 20.72
 
 # a voice: speed the take, time its lines from the pauses (fill SHOT and the word times from this)
 node tools/voice.mjs --in assets/voice/narration-raw.wav --tempo 1.1 --at 0.8
@@ -141,7 +151,9 @@ node tools/mix.mjs --music assets/music.m4a --voice assets/voice/narration.wav -
 node tools/mix.mjs --music assets/music.m4a       # music only
 ```
 
-With no `assets/soundtrack.m4a`, the preview and the export use `src/score.js`.
+With no `assets/soundtrack.m4a`, the preview and the export use `src/score.js`. Level social posts to -16 LUFS (`--lufs -16`); a site film can stay at -15.
+
+Joins are where films go wrong: one picked by hand mid-phrase jumped, and one that matched the beat but skipped part of a chord cycle jumped in harmony. Use `--bpm` so the tool scores whole-cycle joins on chords and rhythm, and listen across the join.
 
 ## 8. Review before showing anyone
 
@@ -155,18 +167,20 @@ node tools/export.mjs --theme light --stills 2,6,9.5,14
 - type is sharp and no descenders are clipped;
 - no words overlap the product;
 - the drawn UI matches the real product;
-- light and dark both hold up;
+- light and dark both hold up (render both: don't report with one missing);
+- white panels have clean, round corners, with no dark rim, colour fringe or strip along an edge (see the look);
 - nothing is empty or off-frame.
 
-Then listen in the preview across the drop, the join and the end. Fix, then re-check.
+Then listen in the preview across the drop, the join and the end, and across the loop point for a loop. Fix, then re-check.
 
 ## 9. Export
 
 ```bash
-node tools/export.mjs --theme dark  --poster 14.5     # renders/film-dark.mp4 (+ poster jpg)
+node tools/export.mjs --theme dark  --poster 14.5     # renders/film-dark-1920x1080.mp4 (+ poster jpg)
 node tools/export.mjs --theme light --poster 14.5
-node tools/contact-sheet.mjs renders/film-dark.mp4    # the whole film in one image: look at it
-node tools/web.mjs renders/film-dark.mp4 --max-mb 24 --out <site>/public/video/<name>-dark.mp4
+node tools/export.mjs --theme dark --size 1080x1080   # any frame; --query passes the page other flags (an ending)
+node tools/contact-sheet.mjs renders/film-dark-1920x1080.mp4    # the whole film in one image: look at it
+node tools/web.mjs renders/film-dark-1920x1080.mp4 --max-mb 24 --out <site>/public/video/<name>-dark.mp4
 ```
 
 An export takes about 1.5× the film's length on an Apple Silicon Mac. Run long exports in the background. Encoding uses CRF 20 capped at 10 Mb/s, about 1 MB per second of film. Web copies step the CRF up until they fit under the cap.
@@ -186,10 +200,10 @@ For posters, make 2–3 options per theme and let the person pick.
 
 ## Present results
 
-- Give the paths: the MP4s, the posters, the contact sheet, and the stills folders, plus the preview URL for watching with sound.
+- Give the paths: the MP4s (every theme and frame asked for), the posters, the contact sheet, and the stills folders, plus the preview URL for watching with sound.
 - Show the contact sheet and one or two stills inline if the interface allows images.
 - Say what the film shows, shot by shot, in one short list, and how long it is.
-- Name anything still open: a voice not yet approved, a track the person should confirm they have rights to, a store upload they need to do.
+- Name anything still open: a voice not yet approved, a track the person should confirm they have rights to, a store upload they need to do. If you can't listen to the result, say so, and name the moments to check by ear (the drop, the join, the loop point, the end).
 - Don't upload, publish or post anything. The person does that.
 
 ## Troubleshooting

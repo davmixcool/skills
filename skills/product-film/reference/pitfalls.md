@@ -23,3 +23,14 @@ change things.
 | The site's video won't deploy | Cloudflare serves at most 25 MB a file | `tools/web.mjs --max-mb 24` |
 | Words overlap the product | The slab comes closer to the camera than when it was laid out | Check the shot's closest frame; move the slab right or the camera back |
 | A word lands late on a moment | The time was guessed from the script | Time from the pauses (`tools/voice.mjs`), then by ear |
+| The music jumps at the join | Picked by hand mid-phrase, or skipped part of a chord cycle (the beat held, the chords didn't) | `music.mjs --bpm`: whole-cycle joins, scored on chords and rhythm; blend over 2 beats |
+| The ending fades out on cut-off music | The join didn't run on to the track's own end | `--to-end`, `--duration` = join + what's left of the track; last shot on its last bar line |
+| Two tempos both look right | They're 3:2 apart (92.7 and 139): both fit one beat count | `--landmarks` on two pairs, and the chord cycle at each |
+| A new track throws every moment off | Moments written in seconds | Time everything in beats and bars from `timeline.js` |
+| Square-ish dark corners behind a window's rounded ones | A rounded box can only be as round as it is thin | `slab(…, { radius: the face's })`: an extruded rounded body |
+| A dark rim, or a dark strip along a white window's top edge | A dark glass body; the depth-of-field pass on a big white panel | `body` in the window's light grey; `bokeh.enabled = false` while it's the subject |
+| A red and blue rim on white edges near the frame's sides | The colour-fringe finish | No chromatic aberration in the finish |
+| A loop shows its seam | The last shot didn't land on the first; the music's length wasn't whole chord cycles | Ease the end onto the opening at `t − DURATION`; `loopmusic.mjs` on whole cycles; compare the first and last frames |
+| Words collide with the product in the square | Laid out at 16:9 | Lay out square first; keep the words' band clear of background things |
+| An object vanishes (opacity NaN) | `Infinity` as a "never" time in `seg()` (∞ − ∞) | Use a large finite time (1e6) |
+| Only the dark version exists | One theme rendered, then reported | Render both themes (and every frame asked for) before reporting |

@@ -7,8 +7,9 @@
  *   product  the product on a glass slab, its moment playing out on the word that names it
  *   end      the wordmark and the tagline. No call to action.
  *
- * URL flags: ?theme=light, ?t=6 (open on a moment), ?clean (no words: for store images and
- * posters), ?export (no player; the exporter drives renderFrame).
+ * URL flags: ?size=1080x1080 (the frame: 1920x1080 by default; social posts want the square first),
+ * ?theme=light, ?t=6 (open on a moment), ?clean (no words: for store images and posters), ?export (no
+ * player; the exporter drives renderFrame).
  */
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -18,12 +19,16 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { canvas, drawCard, drawWindow, setMode } from './draw.js';
 import { DURATION, V, SHOT, MOMENT } from './timeline.js';
 
-const W = 1920, H = 1080;
 const params = new URLSearchParams(location.search);
+// The frame. Every frame size keeps the height (1080), so words keep their size; a wider frame shows
+// more at the sides, a square one less: lay each shot out for the square first when it's for social.
+const [W, H] = (params.get('size') || '1920x1080').split('x').map(Number);
+const stageEl = document.getElementById('stage'), glEl = document.getElementById('gl');
+Object.assign(stageEl.style, { width: `${W}px`, height: `${H}px` });
+glEl.width = W; glEl.height = H; Object.assign(glEl.style, { width: `${W}px`, height: `${H}px` });
 const EXPORT = params.has('export');
 const LIGHT = params.get('theme') === 'light';
 const CLEAN = params.has('clean');
@@ -46,7 +51,7 @@ function seeded(seed) { let s = seed >>> 0 || 1; return () => { s ^= s << 13; s 
 const deg = (d) => (d * Math.PI) / 180;
 
 /* ---------- renderer, scene, post ---------- */
-const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gl'), antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+const renderer = new THREE.WebGLRenderer({ canvas: glEl, antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(1);
 renderer.setSize(W, H, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -63,8 +68,9 @@ composer.addPass(new RenderPass(scene, camera));
 const bokeh = new BokehPass(scene, camera, { focus: 10, aperture: 0.001, maxblur: 0.009 });
 composer.addPass(bokeh);
 composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), LIGHT ? 0.12 : 0.4, 0.8, 1.02));
-// A vignette, the faintest colour fringe, and an invisible dither against banding. No film grain:
-// it reads as TV noise and multiplies the file size.
+// A vignette and an invisible dither against banding. No film grain: it reads as TV noise and
+// multiplies the file size. No colour fringe either: it splits white UI's edges into red and blue near
+// the frame's sides.
 const finish = new ShaderPass({
   uniforms: { tDiffuse: { value: null }, vignette: { value: LIGHT ? 0.14 : 0.42 } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
@@ -72,8 +78,8 @@ const finish = new ShaderPass({
     uniform sampler2D tDiffuse; uniform float vignette; varying vec2 vUv;
     float rand(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
     void main(){
-      vec2 c = vUv - 0.5; float d = dot(c, c); vec2 off = c * d * 0.006;
-      vec4 col = vec4(texture2D(tDiffuse, vUv - off).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv + off).b, 1.0);
+      vec2 c = vUv - 0.5; float d = dot(c, c);
+      vec4 col = vec4(texture2D(tDiffuse, vUv).rgb, 1.0);
       col.rgb *= 1.0 - vignette * smoothstep(0.08, 0.62, d * 1.6);
       col.rgb += (rand(gl_FragCoord.xy) - 0.5) / 255.0;
       gl_FragColor = col;
@@ -89,7 +95,7 @@ function tex(c) { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRG
 /** A background: a soft radial light, one per mood. */
 function ground(x, y, colors) {
   const c = canvas(W, H), ctx = c.getContext('2d');
-  const g = ctx.createRadialGradient(W * x, H * y, 0, W * x, H * y, W * 0.85);
+  const g = ctx.createRadialGradient(W * x, H * y, 0, W * x, H * y, Math.max(W, H) * 0.85);
   colors.forEach(([at, col]) => g.addColorStop(at, col));
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   return tex(c);
@@ -116,11 +122,32 @@ const GLOW = (() => {
   ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 256);
   return new THREE.CanvasTexture(c);
 })();
-/** Glass with a drawn face, and its reflection on the floor. The product always sits on one of these. */
-function slab(face, w, h, { depth = 0.14, radius = 0.1, reflect = true } = {}) {
+/**
+ * The glass: a rounded rectangle with the face's own corner radius, extruded with a slight bevel. (A
+ * RoundedBoxGeometry can only be as round as it is thin, so square-ish corners poke out behind a face
+ * with rounder ones.)
+ */
+function roundedBody(w, h, depth, r) {
+  const b = 0.012, x = -w / 2 + b, y = -h / 2 + b, W2 = w - 2 * b, H2 = h - 2 * b, R = Math.max(0.001, r - b);
+  const s = new THREE.Shape();
+  s.moveTo(x + R, y); s.lineTo(x + W2 - R, y); s.absarc(x + W2 - R, y + R, R, -Math.PI / 2, 0);
+  s.lineTo(x + W2, y + H2 - R); s.absarc(x + W2 - R, y + H2 - R, R, 0, Math.PI / 2);
+  s.lineTo(x + R, y + H2); s.absarc(x + R, y + H2 - R, R, Math.PI / 2, Math.PI);
+  s.lineTo(x, y + R); s.absarc(x + R, y + R, R, Math.PI, Math.PI * 1.5);
+  const g = new THREE.ExtrudeGeometry(s, { depth: depth - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelSegments: 3, curveSegments: 24 });
+  g.translate(0, 0, -(depth - 2 * b) / 2);
+  return g;
+}
+/**
+ * Glass with a drawn face, and its reflection on the floor. The product always sits on one of these.
+ * `radius` is the face's corner radius in world units (the drawing's corner radius × w / its width), so
+ * the glass and the face meet cleanly. `body` is the glass's colour: for a white window, its own light
+ * grey, so the edge reads as the window's thickness rather than a dark rim.
+ */
+function slab(face, w, h, { depth = 0.14, radius = 0.1, reflect = true, body = LIGHT ? 0xe4e5ea : 0x1a1b20 } = {}) {
   const g = new THREE.Group();
-  g.add(new THREE.Mesh(new RoundedBoxGeometry(w + 0.04, h + 0.04, depth, 6, radius),
-    new THREE.MeshPhysicalMaterial({ color: LIGHT ? 0xe4e5ea : 0x1a1b20, metalness: LIGHT ? 0.2 : 0.6, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.18 })));
+  g.add(new THREE.Mesh(roundedBody(w, h, depth, radius),
+    new THREE.MeshPhysicalMaterial({ color: body, metalness: LIGHT ? 0.2 : 0.5, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.25 })));
   const map = tex(face);
   const front = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map, transparent: true, toneMapped: false }));
   front.position.z = depth / 2 + 0.002;
@@ -167,14 +194,13 @@ const openCards = [];
 /* ---------- 2. Product: the window on glass ---------- */
 const windowCanvas = canvas(2400, 1500);
 const WIN_W = 6.4, WIN_H = WIN_W * (1500 / 2400);
-const productSlab = slab(windowCanvas, WIN_W, WIN_H, { radius: 0.12 });
+// drawWindow's corner radius is 24 at 1600 wide
+const productSlab = slab(windowCanvas, WIN_W, WIN_H, { radius: WIN_W * 24 / 1600 });
 const product = new THREE.Group();
 product.add(productSlab, dust(400, { x: 18, y: 10, z: 16, z0: 4 }, 11, 0xd9c6ff));
 scene.add(product);
-// a soft coloured halo behind the slab (not behind words: glows behind text look cheap)
-const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: 0x4f7dff, transparent: true, opacity: LIGHT ? 0.2 : 0.5, blending: LIGHT ? THREE.NormalBlending : THREE.AdditiveBlending, depthWrite: false }));
-halo.scale.set(16, 11, 1); halo.position.set(0, 0.3, -3);
-product.add(halo);
+// No glowing halo behind the product by default: many people find glows cheap. Light the object itself,
+// and add a halo only when someone asks for one.
 let drawnK = -1;
 /** Repaint only when the moment moved: canvas uploads are the slow part of a frame. */
 function paintWindow(k) {
@@ -305,8 +331,7 @@ async function soundtrack() {
   };
 }
 async function player(t0) {
-  const stage = document.getElementById('stage');
-  const fit = () => { const s = Math.min(innerWidth / W, (innerHeight - 40) / H); stage.style.transform = `translate(-50%, -50%) scale(${s})`; };
+  const fit = () => { const s = Math.min(innerWidth / W, (innerHeight - 40) / H); stageEl.style.transform = `translate(-50%, -50%) scale(${s})`; };
   fit(); addEventListener('resize', fit);
   const scrub = document.getElementById('scrub'), time = document.getElementById('time'), play = document.getElementById('play');
   const audio = await soundtrack();
