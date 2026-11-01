@@ -37,6 +37,7 @@ Read the product before asking anything: its README, landing page, store listing
 
 - **Where it goes.** A landing page (~60 s, narrated), a launch post (20–40 s), a store promo, or a seasonal or social clip (15–30 s, music only). This sets the length and whether there's a voice.
 - **Which frames.** A site wants 16:9. A social post wants the square first (1080 × 1080), then vertical (made from the square) and often 11:9 (1320 × 1080), 1.43:1 (1548 × 1080) and 16:9 to pick from. Render every one asked for: don't drop a size without asking.
+- **What goes with it.** For a social post about a feature with a working prototype, the film is the main post and a take of the prototype (the `prototype-take` skill) goes in the reply: the film stops the scroll, the take answers "is this real?". The take is silent; the film carries the music.
 - **How it ends.** On the wordmark, or, for a social clip, as a loop (its last frame flows back into its first) or on a closing line. When the product can't be named yet (an unreleased idea), end on a line that answers the opening one, plus the shortcut or gesture to remember; a question tacked on at the end ("Would you use this?") reads as tacked on.
 - **What it shows.** Which features, and in which environments (browsers, OSes, devices). Get a reference screenshot of each real environment to draw from.
 - **Music.** A track the person provides or names. Never download one on your own. With no track, use a code score.
