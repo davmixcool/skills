@@ -32,6 +32,7 @@ Each is an object with `at` (seconds) and one or more of:
 | `down`, `up` | Press and release, for a drag: `down`, then a `to` with `dur`, then `up` |
 | `press` | A key: `{ code: 'KeyA', key: 'a', text: 'a', meta, shift, alt, ctrl }` |
 | `type`, `every` | Types a string, one key every `every` seconds (default 0.07) |
+| `keydown`, `keyup` | Holds a key down until a later `keyup`, as a hand holds ⌥ while the pointer moves: `{ code: 'AltLeft', key: 'Alt' }`. A held modifier rides on every mouse and key event in between, so `press: { code: 'KeyV', key: 'v' }` while ⌥ is held arrives as ⌥V |
 | `keys` | Keycaps shown by the pointer: `['⌘', 'A']`. They fade in, hold, and fade |
 | `focus` | Pins the camera: `{ x, y, k }`; `null` hands it back to the `focus` function |
 | `cross` | `true` shows a crosshair instead of the pointer (a screenshot selection), `false` back |

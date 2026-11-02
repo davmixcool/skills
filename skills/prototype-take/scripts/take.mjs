@@ -159,18 +159,28 @@ const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 const fill = Math.max(FW / (SW + 2 * EXT), FH / SH);
 const ptr = { ...(TAKE.pointer || { x: SW / 2, y: SH / 2 }) };
 let tween = null, held = false, mods = 0, keys = [], keysAt = -9, cam = null;
+// Keys held down across moments (`keydown` … `keyup`), as a hand holds ⌥ while the pointer moves. A held
+// modifier rides on every mouse and key event until it's let go.
+let heldMods = 0;
+const MODKEY = { Alt: MOD.alt, Control: MOD.ctrl, Meta: MOD.meta, Shift: MOD.shift };
 
 async function mouse(type, extra = {}) {
   const { ox, oy, k } = await evaluate('__take.cam');
-  await send('Input.dispatchMouseEvent', { type, x: ox + ptr.x * k, y: oy + ptr.y * k, button: 'left', buttons: held ? 1 : 0, modifiers: mods, ...extra });
+  await send('Input.dispatchMouseEvent', { type, x: ox + ptr.x * k, y: oy + ptr.y * k, button: 'left', buttons: held ? 1 : 0, modifiers: mods | heldMods, ...extra });
+}
+const vkOf = (p) => ({ Escape: 27, Space: 32, Enter: 13, Backspace: 8, Tab: 9, ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40 }[p.code]
+  ?? { Alt: 18, Control: 17, Meta: 91, Shift: 16 }[p.key] ?? (p.key || ' ').toUpperCase().charCodeAt(0));
+async function keyDown(p, modifiers) {
+  const base = { code: p.code, key: p.key, modifiers, windowsVirtualKeyCode: vkOf(p) };
+  await send('Input.dispatchKeyEvent', { type: p.text && !modifiers ? 'keyDown' : 'rawKeyDown', ...base, ...(p.text && !modifiers ? { text: p.text } : {}) });
 }
 async function key(p) {
-  const modifiers = (p.alt ? MOD.alt : 0) | (p.ctrl ? MOD.ctrl : 0) | (p.meta ? MOD.meta : 0) | (p.shift ? MOD.shift : 0);
-  const vk = { Escape: 27, Space: 32, Enter: 13, Backspace: 8, Tab: 9, ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40 }[p.code] ?? (p.key || ' ').toUpperCase().charCodeAt(0);
-  const base = { code: p.code, key: p.key, modifiers, windowsVirtualKeyCode: vk };
-  await send('Input.dispatchKeyEvent', { type: p.text && !modifiers ? 'keyDown' : 'rawKeyDown', ...base, ...(p.text && !modifiers ? { text: p.text } : {}) });
-  await send('Input.dispatchKeyEvent', { type: 'keyUp', ...base });
+  const modifiers = (p.alt ? MOD.alt : 0) | (p.ctrl ? MOD.ctrl : 0) | (p.meta ? MOD.meta : 0) | (p.shift ? MOD.shift : 0) | heldMods;
+  await keyDown(p, modifiers);
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', code: p.code, key: p.key, modifiers, windowsVirtualKeyCode: vkOf(p) });
 }
+async function hold(p) { heldMods |= MODKEY[p.key] || 0; await keyDown(p, heldMods); }
+async function release(p) { heldMods &= ~(MODKEY[p.key] || 0); await send('Input.dispatchKeyEvent', { type: 'keyUp', code: p.code, key: p.key, modifiers: heldMods, windowsVirtualKeyCode: vkOf(p) }); }
 
 // One moment of the take, at t seconds: run what's due, move the pointer and camera, advance the clock.
 let next = 0;
@@ -187,7 +197,9 @@ async function step(t) {
     if (a.focus !== undefined) await evaluate(`__take.focus = ${JSON.stringify(a.focus)}`);
     if (a.cross !== undefined) await evaluate(`__take.cross = ${!!a.cross}`);
     if (a.call) await evaluate(a.call);
+    if (a.keydown) await hold(a.keydown);
     if (a.press) await key(a.press);
+    if (a.keyup) await release(a.keyup);
     if (a.click) { mods = (a.click.meta ? MOD.meta : 0) | (a.click.shift ? MOD.shift : 0) | (a.click.alt ? MOD.alt : 0); held = true; await mouse('mousePressed', { clickCount: 1 }); held = false; await mouse('mouseReleased', { clickCount: 1 }); mods = 0; }
     if (a.down) { held = true; await mouse('mousePressed', { clickCount: 1 }); }
     if (a.up) { held = false; await mouse('mouseReleased', { clickCount: 1 }); }

@@ -16,4 +16,6 @@ Each of these happened on a real take.
 | Chrome hangs on a screenshot | It shared a profile with a running Chrome | The script gives Chrome its own throwaway profile; do the same in any other headless call |
 | A take no longer matches its posted video | The prototype changed after the take was filmed | Keep take-only changes in `setup` and `scripts`; before re-posting, render stills at the posted moments and compare |
 | The take's settings differ from the prototype's defaults | The browser kept earlier settings | `storage` sets them before the page loads |
+| Something that should happen after an animation never does (a paste, a step) | The prototype waits on an animation's `finished` promise; the take pauses every animation and steps it by hand, and a paused animation never finishes | In the prototype, follow an animation with a `setTimeout` of its length instead (the clock runs timers) |
+| A held shortcut (hold ⌥, move, let go) can't be scripted with `press` | `press` is a key going down and up at once | `keydown` … `keyup` around the moves; a held modifier rides on every event in between |
 | A silent take does poorly on TikTok | TikTok pushes videos with sound | The standalone cut gets the film's track: `--music` |

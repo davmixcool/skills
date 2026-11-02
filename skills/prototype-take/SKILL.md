@@ -32,6 +32,7 @@ Every take films a prototype, so build the prototype before the take, and before
 - **One stage.** Put everything on one fixed-size element (say 1512 × 945, a laptop screen) that the camera can move and scale. The prototype's own pointer maths should go through `getBoundingClientRect`, or update its scale and offset when the camera moves (`camera.apply`).
 - **Its settings** (sizes, counts) come from `localStorage`, so the take can set them (`storage`).
 - **Staging, kept apart.** Things a browser page can't do for real (an OS screenshot, a system notification, another app's window) are staged in a separate script (`scripts` in the take file), never mixed into the prototype. Name them in the reply if they matter.
+- **Timers, not `finished`.** Anything that happens after an animation (a paste landing, the next step) follows it with a `setTimeout`, never the animation's `finished` promise: a take steps paused animations, which never finish.
 - **Real-browser limits.** A page never sees some shortcuts: ⌘⇧4 belongs to macOS, ⌘W closes the tab. Give the prototype its own (⌥⇧4, a close button); the take can still show any keycaps.
 - **Nothing that isn't yours.** For an idea not out yet, keep your other products out of it, and use neutral sample data (stock photos, made-up vendors).
 
