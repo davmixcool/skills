@@ -141,6 +141,11 @@ Moves the tab into the collapsed Bin group and unloads it (`discard`).
     "ignore_pinned_tabs": true, "ignore_grouped_tabs": true, "ignore_tabs_playing_audio": true, "discard": true } }
 ```
 
+Chat and email tabs (the `chat` and `email` kinds) are never moved to Bin, put
+to sleep or closed by a workflow while **Keep chat and email awake** is on in
+Settings, which it is unless the person switched it off (WithFew 1.1.3+): an
+unloaded chat gets no messages. A step for them does nothing until it's off.
+
 `ignore_grouped_tabs` means the person's own groups; Few's groups are always
 fair game. Keep all three `true` unless asked.
 
@@ -206,9 +211,18 @@ Bookmarks the tab. `folder: null` = the WithFew folder Few made at install.
 
 ### Group — `group`
 
-Moves the tab into one of the person's tab groups, by the group's id in their
-browser — which you can't know. Leave it out of files; if they want it, tell
-them to add a Group step in the editor and pick the group.
+Moves the tab into a tab group, by the group's name (WithFew 1.1.3+). Few
+uses the group of that name in the tab's window, or makes one.
+
+```json
+{ "componentType": "task", "type": "group", "name": "Group",
+  "properties": { "type": "action", "isDeletable": true, "task": "group", "group": "Forex" } }
+```
+
+Before 1.1.3, `group` was the group's id in the person's browser, which you
+can't know and which a browser restart changes. For a site that should always
+be in one group, a workflow isn't needed: **Settings → Sites and their groups**
+does it, ahead of everything else.
 
 ## Logic (`properties.type: "logic"`)
 
